@@ -1,0 +1,24 @@
+{
+  "name": "navsite",
+  "version": "1.0.0",
+  "description": "网站导航平台",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js",
+    "dev": "node server/app.js"
+  },
+  "keywords": [
+    "navigation",
+    "website",
+    "directory"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "sql.js": "^1.10.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0"
+  }
+}

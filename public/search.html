@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="搜索结果 - 导航站">
+    <title>搜索结果 - 导航站</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <span class="logo-icon">🌐</span>
+                    <span class="logo-text">导航站</span>
+                </a>
+                <nav class="nav">
+                    <a href="/" class="nav-link">首页</a>
+                    <a href="/submit.html" class="nav-link">提交网站</a>
+                    <a href="/about.html" class="nav-link">关于我们</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 搜索区域 -->
+    <section class="hero" style="padding: 32px 0;">
+        <div class="container">
+            <div class="search-box">
+                <form class="search-form" id="searchForm">
+                    <input type="text" class="search-input" id="searchInput" 
+                           placeholder="输入关键词搜索..." autocomplete="off">
+                    <button type="submit" class="search-btn">搜索</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 搜索结果 -->
+    <section class="websites-section">
+        <div class="container">
+            <h2 class="section-title" id="resultTitle">搜索结果</h2>
+            <div class="websites-grid" id="websitesGrid">
+                <!-- 网站卡片将通过JS动态加载 -->
+            </div>
+            <div id="paginationContainer"></div>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="/about.html">关于我们</a>
+                    <a href="/submit.html">提交网站</a>
+                    <a href="mailto:contact@navsite.com">联系我们</a>
+                </div>
+                <p class="footer-copyright">© 2024 导航站. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast提示 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- JavaScript -->
+    <script src="/js/api-client.js"></script>
+    <script src="/js/components.js"></script>
+    <script>
+        // 获取搜索关键词
+        const keyword = components.getUrlParam('q');
+        let currentPage = 1;
+        const limit = 20;
+
+        // 设置搜索框值
+        if (keyword) {
+            document.getElementById('searchInput').value = keyword;
+        }
+
+        // 搜索表单提交
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchKeyword = document.getElementById('searchInput').value.trim();
+            if (searchKeyword) {
+                window.location.href = `/search.html?q=${encodeURIComponent(searchKeyword)}`;
+            }
+        });
+
+        // 执行搜索
+        async function performSearch(page = 1) {
+            const grid = document.getElementById('websitesGrid');
+            const paginationContainer = document.getElementById('paginationContainer');
+            const resultTitle = document.getElementById('resultTitle');
+
+            if (!keyword) {
+                grid.innerHTML = components.renderEmptyState('请输入搜索关键词', '在上方搜索框中输入关键词进行搜索');
+                return;
+            }
+
+            grid.innerHTML = components.renderLoading();
+            currentPage = page;
+
+            try {
+                const result = await api.searchWebsites(keyword, page, limit);
+                console.log('搜索结果:', result);
+
+                if (result.success) {
+                    const { websites, pagination, suggestions } = result.data;
+
+                    if (websites && websites.length > 0) {
+                        resultTitle.textContent = `搜索"${keyword}"的结果 (共${pagination.total}个)`;
+                        grid.innerHTML = websites.map(components.renderWebsiteCard).join('');
+
+                        // 渲染分页
+                        if (pagination.totalPages > 1) {
+                            paginationContainer.innerHTML = components.renderPagination(
+                                pagination,
+                                `performSearch`
+                            );
+                        } else {
+                            paginationContainer.innerHTML = '';
+                        }
+                    } else {
+                        resultTitle.textContent = `未找到"${keyword}"的相关网站`;
+                        grid.innerHTML = components.renderEmptyState('未找到相关网站', '试试其他关键词');
+                        
+                        // 显示搜索建议
+                        if (suggestions && suggestions.length > 0) {
+                            grid.innerHTML += `
+                                <div style="margin-top: 32px; text-align: center; grid-column: 1 / -1;">
+                                    <p style="color: var(--text-secondary); margin-bottom: 16px;">热门搜索：</p>
+                                    <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                                        ${suggestions.map(s => `<span class="hot-tag" onclick="window.location.href='/search.html?q=${encodeURIComponent(s)}'">${s}</span>`).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                } else {
+                    resultTitle.textContent = '搜索失败';
+                    grid.innerHTML = components.renderEmptyState('搜索失败', result.error.message, '😕');
+                    paginationContainer.innerHTML = '';
+                }
+            } catch (error) {
+                console.error('搜索错误:', error);
+                resultTitle.textContent = '搜索失败';
+                grid.innerHTML = components.renderEmptyState('搜索失败', '请稍后重试', '😕');
+                paginationContainer.innerHTML = '';
+            }
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            performSearch(1);
+        });
+    </script>
+</body>
+</html>

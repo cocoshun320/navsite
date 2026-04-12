@@ -1,0 +1,154 @@
+/* ========================================
+   响应式设计
+   基于PRD多端适配策略
+   ======================================== */
+
+/* 移动端 (< 768px) */
+@media (max-width: 767px) {
+    :root {
+        --font-size-base: 14px;
+        --font-size-xl: 20px;
+        --font-size-xxl: 24px;
+    }
+    
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+    
+    /* 头部 */
+    .header-content {
+        height: 56px;
+    }
+    
+    .logo-text {
+        display: none;
+    }
+    
+    .nav {
+        gap: var(--spacing-sm);
+    }
+    
+    .nav-link {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+    
+    /* Hero */
+    .hero {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .hero-title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .hero-subtitle {
+        font-size: var(--font-size-base);
+    }
+    
+    /* 搜索框 */
+    .search-form {
+        flex-direction: column;
+    }
+    
+    .search-btn {
+        width: 100%;
+    }
+    
+    /* 分类 */
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .category-card {
+        padding: var(--spacing-md);
+    }
+    
+    .category-icon {
+        font-size: 32px;
+    }
+    
+    /* 网站列表 */
+    .websites-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    /* 底部 */
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
+    
+    .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* 平板 (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .container {
+        max-width: 960px;
+    }
+    
+    /* 分类 */
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* 网站列表 */
+    .websites-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* 桌面端 (≥ 1024px) */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1200px;
+    }
+    
+    /* 分类 */
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    /* 网站列表 */
+    .websites-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* 大屏幕 (≥ 1440px) */
+@media (min-width: 1440px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    /* 分类 */
+    .categories-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    /* 网站列表 */
+    .websites-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .header,
+    .footer,
+    .search-box {
+        display: none;
+    }
+    
+    .website-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}

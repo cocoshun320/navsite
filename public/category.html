@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="网站分类 - 网站导航平台">
+    <title>分类详情 - 网站导航</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/animations.css">
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <span>🌐</span>
+                    <span>导航站</span>
+                </a>
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/submit.html">提交网站</a></li>
+                        <li><a href="/about.html">关于我们</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 分类信息 -->
+    <section class="hero" style="padding: 32px 0;">
+        <div class="container">
+            <h1 class="hero-title" id="categoryTitle">加载中...</h1>
+            <p class="hero-subtitle" id="categorySubtitle"></p>
+        </div>
+    </section>
+
+    <!-- 网站列表 -->
+    <section class="websites-section">
+        <div class="container">
+            <div class="websites-grid" id="websitesGrid">
+                <!-- 网站卡片将通过JS动态加载 -->
+            </div>
+            <div id="paginationContainer"></div>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="/about.html">关于我们</a>
+                    <a href="/submit.html">提交网站</a>
+                    <a href="mailto:contact@example.com">联系我们</a>
+                </div>
+                <p class="footer-copyright">© 2024 网站导航平台. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/api-client.js"></script>
+    <script src="/js/components.js"></script>
+    <script>
+        // 获取分类ID
+        const categoryId = components.getUrlParam('id');
+        let currentPage = 1;
+        const limit = 20;
+
+        // 加载分类信息
+        async function loadCategoryInfo() {
+            if (!categoryId) {
+                document.getElementById('categoryTitle').textContent = '分类不存在';
+                document.getElementById('categorySubtitle').textContent = '请返回首页选择正确的分类';
+                return;
+            }
+
+            try {
+                const result = await api.getCategory(parseInt(categoryId));
+
+                if (result.success) {
+                    document.getElementById('categoryTitle').textContent = result.data.name;
+                    document.getElementById('categorySubtitle').textContent = `共收录 ${result.data.website_count} 个网站`;
+                    document.title = `${result.data.name} - 网站导航`;
+                } else {
+                    document.getElementById('categoryTitle').textContent = '分类不存在';
+                    document.getElementById('categorySubtitle').textContent = result.error.message;
+                }
+            } catch (error) {
+                document.getElementById('categoryTitle').textContent = '加载失败';
+                document.getElementById('categorySubtitle').textContent = '请稍后重试';
+            }
+        }
+
+        // 加载网站列表
+        async function loadWebsites(page = 1) {
+            const grid = document.getElementById('websitesGrid');
+            const paginationContainer = document.getElementById('paginationContainer');
+
+            if (!categoryId) {
+                grid.innerHTML = components.renderEmptyState('分类不存在', '请返回首页选择正确的分类');
+                return;
+            }
+
+            grid.innerHTML = components.renderLoading();
+            currentPage = page;
+
+            try {
+                const result = await api.getCategoryWebsites(parseInt(categoryId), page, limit);
+
+                if (result.success && result.data.websites.length > 0) {
+                    grid.innerHTML = result.data.websites.map(components.renderWebsiteCard).join('');
+
+                    // 渲染分页
+                    if (result.data.pagination.totalPages > 1) {
+                        paginationContainer.innerHTML = components.renderPagination(
+                            result.data.pagination,
+                            `loadWebsites`
+                        );
+                    } else {
+                        paginationContainer.innerHTML = '';
+                    }
+                } else {
+                    grid.innerHTML = components.renderEmptyState('暂无网站', '该分类下还没有收录网站');
+                    paginationContainer.innerHTML = '';
+                }
+            } catch (error) {
+                grid.innerHTML = components.renderEmptyState('加载失败', '请稍后重试', '😕');
+                paginationContainer.innerHTML = '';
+            }
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCategoryInfo();
+            loadWebsites(1);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 3px;
+            white-space: pre-wrap;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>API测试页面</h1>
+    
+    <div class="test-section">
+        <h2>1. 测试分类API</h2>
+        <button onclick="testCategories()">测试分类</button>
+        <div id="categories-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. 测试登录API</h2>
+        <input type="text" id="username" placeholder="用户名" value="admin">
+        <input type="password" id="password" placeholder="密码" value="abc888888">
+        <button onclick="testLogin()">测试登录</button>
+        <div id="login-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. 检查登录状态</h2>
+        <button onclick="checkLogin()">检查状态</button>
+        <div id="check-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. 测试管理API</h2>
+        <button onclick="testManage()">测试管理</button>
+        <div id="manage-result" class="result"></div>
+    </div>
+
+    <script>
+        async function testCategories() {
+            const resultDiv = document.getElementById('categories-result');
+            resultDiv.textContent = '测试中...';
+            
+            try {
+                const response = await fetch('/api/categories');
+                const result = await response.json();
+                resultDiv.innerHTML = `<span class="success">成功</span>\n${JSON.stringify(result, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">错误: ${error.message}</span>`;
+            }
+        }
+        
+        async function testLogin() {
+            const resultDiv = document.getElementById('login-result');
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            resultDiv.textContent = '登录中...';
+            
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                resultDiv.innerHTML = `<span class="${result.success ? 'success' : 'error'}">${result.success ? '成功' : '失败'}</span>\n${JSON.stringify(result, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">错误: ${error.message}</span>`;
+            }
+        }
+        
+        async function checkLogin() {
+            const resultDiv = document.getElementById('check-result');
+            resultDiv.textContent = '检查中...';
+            
+            try {
+                const response = await fetch('/api/admin/check');
+                const result = await response.json();
+                resultDiv.innerHTML = `<span class="${result.success ? 'success' : 'error'}">${result.success ? '已登录' : '未登录'}</span>\n${JSON.stringify(result, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">错误: ${error.message}</span>`;
+            }
+        }
+        
+        async function testManage() {
+            const resultDiv = document.getElementById('manage-result');
+            resultDiv.textContent = '测试中...';
+            
+            try {
+                const response = await fetch('/api/manage/websites');
+                const result = await response.json();
+                resultDiv.innerHTML = `<span class="${result.success ? 'success' : 'error'}">${result.success ? '成功' : '失败'}</span>\n${JSON.stringify(result, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">错误: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员登录 - 网站导航</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 12px;
+            background: #0066FF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .login-form button:hover {
+            background: #0052CC;
+        }
+        .login-form button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .error-msg {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+        .success-msg {
+            color: green;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body style="background: #f5f7fa;">
+    <div class="login-container">
+        <h1 class="login-title">管理员登录</h1>
+        <form class="login-form" id="loginForm">
+            <input type="text" id="username" placeholder="用户名" value="admin" required>
+            <input type="password" id="password" placeholder="密码" value="abc888888" required>
+            <button type="submit" id="loginBtn">登录</button>
+        </form>
+        <div class="error-msg" id="errorMsg"></div>
+        <div class="success-msg" id="successMsg"></div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMsg = document.getElementById('errorMsg');
+            const successMsg = document.getElementById('successMsg');
+            
+            // 隐藏消息
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            if (!username || !password) {
+                errorMsg.textContent = '请输入用户名和密码';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            // 禁用按钮
+            loginBtn.disabled = true;
+            loginBtn.textContent = '登录中...';
+            
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    successMsg.textContent = '登录成功！正在跳转...';
+                    successMsg.style.display = 'block';
+                    
+                    // 使用localStorage保存登录状态
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    localStorage.setItem('adminUsername', username);
+                    
+                    // 延迟跳转
+                    setTimeout(function() {
+                        window.location.href = '/admin.html';
+                    }, 1000);
+                } else {
+                    errorMsg.textContent = result.error.message || '登录失败';
+                    errorMsg.style.display = 'block';
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = '登录';
+                }
+            } catch (error) {
+                errorMsg.textContent = '网络错误: ' + error.message;
+                errorMsg.style.display = 'block';
+                loginBtn.disabled = false;
+                loginBtn.textContent = '登录';
+            }
+        });
+    </script>
+</body>
+</html>

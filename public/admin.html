@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理 - 网站导航</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f7fa; }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 0;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 { font-size: 20px; }
+        
+        .header button {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .content {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .toolbar input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+        
+        .toolbar button {
+            padding: 8px 16px;
+            background: #0066FF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th { background: #f8f9fa; font-weight: 600; }
+        
+        .btn {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .btn-edit { background: #0066FF; color: white; }
+        .btn-delete { background: #FF4444; color: white; }
+        
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .pagination button {
+            padding: 8px 12px;
+            margin: 0 4px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .pagination button.active { background: #0066FF; color: white; }
+        
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 { font-size: 20px; }
+        
+        .modal-header button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .form-group { margin-bottom: 16px; }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-group textarea { min-height: 100px; }
+        
+        .checkbox-group { display: flex; gap: 16px; }
+        
+        .checkbox-group label { display: flex; align-items: center; gap: 4px; }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .btn-cancel {
+            padding: 8px 16px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .btn-save {
+            padding: 8px 16px;
+            background: #0066FF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .status-approved { color: green; }
+        .status-pending { color: orange; }
+        .status-rejected { color: red; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>后台管理</h1>
+            <div>
+                <span id="username">管理员</span>
+                <button onclick="logout()">退出登录</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="toolbar">
+            <div>
+                <input type="text" id="searchInput" placeholder="搜索网站名称...">
+                <button onclick="search()">搜索</button>
+            </div>
+            <button onclick="showAddModal()">+ 添加网站</button>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>URL</th>
+                    <th>分类</th>
+                    <th>状态</th>
+                    <th>热门</th>
+                    <th>推荐</th>
+                    <th>访问量</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr><td colspan="9" style="text-align:center;">加载中...</td></tr>
+            </tbody>
+        </table>
+        
+        <div class="pagination" id="pagination"></div>
+    </div>
+    
+    <!-- 添加/编辑模态框 -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">添加网站</h2>
+                <button onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form id="websiteForm">
+                <input type="hidden" id="websiteId">
+                
+                <div class="form-group">
+                    <label>网站名称 *</label>
+                    <input type="text" id="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>网站URL *</label>
+                    <input type="url" id="url" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>分类 *</label>
+                    <select id="category" required>
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>描述 *</label>
+                    <textarea id="description" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Logo URL</label>
+                    <input type="url" id="logo">
+                </div>
+                
+                <div class="form-group">
+                    <label>状态</label>
+                    <select id="status">
+                        <option value="approved">已通过</option>
+                        <option value="pending">待审核</option>
+                        <option value="rejected">已拒绝</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>标记</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="isHot"> 热门</label>
+                        <label><input type="checkbox" id="isRecommended"> 推荐</label>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">取消</button>
+                    <button type="submit" class="btn-save">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const limit = 20;
+        let categories = [];
+        
+        // 检查登录
+        function checkLogin() {
+            const loggedIn = localStorage.getItem('adminLoggedIn');
+            const username = localStorage.getItem('adminUsername');
+            
+            if (!loggedIn || loggedIn !== 'true') {
+                window.location.href = '/login.html';
+                return false;
+            }
+            
+            document.getElementById('username').textContent = username || '管理员';
+            return true;
+        }
+        
+        // 登出
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminUsername');
+            window.location.href = '/login.html';
+        }
+        
+        // 加载分类
+        async function loadCategories() {
+            try {
+                const res = await fetch('/api/categories');
+                const result = await res.json();
+                
+                if (result.success) {
+                    categories = result.data;
+                    const select = document.getElementById('category');
+                    select.innerHTML = '<option value="">请选择</option>';
+                    result.data.forEach(cat => {
+                        select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('加载分类失败:', error);
+            }
+        }
+        
+        // 加载网站列表
+        async function loadWebsites(page = 1) {
+            currentPage = page;
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">加载中...</td></tr>';
+            
+            try {
+                const res = await fetch(`/api/manage/websites?page=${page}&limit=${limit}`);
+                const result = await res.json();
+                
+                if (result.success) {
+                    const { websites, pagination } = result.data;
+                    
+                    if (websites.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">暂无数据</td></tr>';
+                        return;
+                    }
+                    
+                    tbody.innerHTML = websites.map(site => `
+                        <tr>
+                            <td>${site.id}</td>
+                            <td>${site.name}</td>
+                            <td><a href="${site.url}" target="_blank">${site.url}</a></td>
+                            <td>${site.category_name || '-'}</td>
+                            <td><span class="status-${site.status}">${getStatusText(site.status)}</span></td>
+                            <td>${site.is_hot ? '✓' : '-'}</td>
+                            <td>${site.is_recommended ? '✓' : '-'}</td>
+                            <td>${site.view_count}</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editWebsite(${site.id})">编辑</button>
+                                <button class="btn btn-delete" onclick="deleteWebsite(${site.id})">删除</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                    
+                    renderPagination(pagination);
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">${result.error.message}</td></tr>`;
+                }
+            } catch (error) {
+                console.error('加载网站失败:', error);
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">加载失败</td></tr>';
+            }
+        }
+        
+        // 获取状态文本
+        function getStatusText(status) {
+            const map = {
+                'approved': '已通过',
+                'pending': '待审核',
+                'rejected': '已拒绝'
+            };
+            return map[status] || status;
+        }
+        
+        // 渲染分页
+        function renderPagination(pagination) {
+            const container = document.getElementById('pagination');
+            const { page, totalPages } = pagination;
+            
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            if (page > 1) {
+                html += `<button onclick="loadWebsites(${page - 1})">上一页</button>`;
+            }
+            
+            for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) {
+                html += `<button class="${i === page ? 'active' : ''}" onclick="loadWebsites(${i})">${i}</button>`;
+            }
+            
+            if (page < totalPages) {
+                html += `<button onclick="loadWebsites(${page + 1})">下一页</button>`;
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        // 搜索
+        function search() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            if (keyword) {
+                window.location.href = `/search.html?q=${encodeURIComponent(keyword)}`;
+            }
+        }
+        
+        // 显示添加模态框
+        function showAddModal() {
+            document.getElementById('modalTitle').textContent = '添加网站';
+            document.getElementById('websiteForm').reset();
+            document.getElementById('websiteId').value = '';
+            document.getElementById('editModal').classList.add('show');
+        }
+        
+        // 编辑网站
+        async function editWebsite(id) {
+            try {
+                const res = await fetch(`/api/manage/websites/${id}`);
+                const result = await res.json();
+                
+                if (result.success) {
+                    const site = result.data;
+                    
+                    document.getElementById('modalTitle').textContent = '编辑网站';
+                    document.getElementById('websiteId').value = site.id;
+                    document.getElementById('name').value = site.name;
+                    document.getElementById('url').value = site.url;
+                    document.getElementById('category').value = site.category_id;
+                    document.getElementById('description').value = site.description;
+                    document.getElementById('logo').value = site.logo_url || '';
+                    document.getElementById('status').value = site.status;
+                    document.getElementById('isHot').checked = site.is_hot;
+                    document.getElementById('isRecommended').checked = site.is_recommended;
+                    
+                    document.getElementById('editModal').classList.add('show');
+                } else {
+                    alert(result.error.message);
+                }
+            } catch (error) {
+                console.error('获取网站信息失败:', error);
+                alert('获取网站信息失败');
+            }
+        }
+        
+        // 删除网站
+        async function deleteWebsite(id) {
+            if (!confirm('确定要删除这个网站吗？')) {
+                return;
+            }
+            
+            try {
+                const res = await fetch(`/api/manage/websites/${id}`, {
+                    method: 'DELETE'
+                });
+                const result = await res.json();
+                
+                if (result.success) {
+                    alert('删除成功');
+                    loadWebsites(currentPage);
+                } else {
+                    alert(result.error.message);
+                }
+            } catch (error) {
+                console.error('删除失败:', error);
+                alert('删除失败');
+            }
+        }
+        
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('show');
+        }
+        
+        // 表单提交
+        document.getElementById('websiteForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('websiteId').value;
+            const website = {
+                name: document.getElementById('name').value.trim(),
+                url: document.getElementById('url').value.trim(),
+                category_id: parseInt(document.getElementById('category').value),
+                description: document.getElementById('description').value.trim(),
+                logo_url: document.getElementById('logo').value.trim(),
+                status: document.getElementById('status').value,
+                is_hot: document.getElementById('isHot').checked,
+                is_recommended: document.getElementById('isRecommended').checked
+            };
+            
+            try {
+                const url = id ? `/api/manage/websites/${id}` : '/api/manage/websites';
+                const method = id ? 'PUT' : 'POST';
+                
+                const res = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(website)
+                });
+                
+                const result = await res.json();
+                
+                if (result.success) {
+                    alert(id ? '更新成功' : '添加成功');
+                    closeModal();
+                    loadWebsites(currentPage);
+                } else {
+                    alert(result.error.message);
+                }
+            } catch (error) {
+                console.error('保存失败:', error);
+                alert('保存失败');
+            }
+        });
+        
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (checkLogin()) {
+                await loadCategories();
+                await loadWebsites(1);
+            }
+        });
+    </script>
+</body>
+</html>

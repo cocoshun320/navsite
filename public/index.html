@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="导航站 - 快速发现和访问优质网站资源">
+    <title>导航站 - 发现优质网站资源</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <span class="logo-icon">🌐</span>
+                    <span class="logo-text">导航站</span>
+                </a>
+                <nav class="nav">
+                    <a href="/" class="nav-link active">首页</a>
+                    <a href="/submit.html" class="nav-link">提交网站</a>
+                    <a href="/about.html" class="nav-link">关于我们</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero区域 -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">发现优质网站资源</h1>
+            <p class="hero-subtitle">快速找到你需要的网站，分类清晰，访问便捷</p>
+            
+            <!-- 搜索框 -->
+            <div class="search-box">
+                <!-- 搜索引擎选择 -->
+                <div class="search-engine-selector">
+                    <button class="engine-btn active" data-engine="site" data-placeholder="搜索本站网站...">
+                        🏠 本站
+                    </button>
+                    <button class="engine-btn" data-engine="baidu" data-url="https://www.baidu.com/s?wd=" data-placeholder="百度搜索...">
+                        百度
+                    </button>
+                    <button class="engine-btn" data-engine="sogou" data-url="https://www.sogou.com/web?query=" data-placeholder="搜狗搜索...">
+                        搜狗
+                    </button>
+                    <button class="engine-btn" data-engine="google" data-url="https://www.google.com/search?q=" data-placeholder="Google搜索...">
+                        Google
+                    </button>
+                    <button class="engine-btn" data-engine="360" data-url="https://www.so.com/s?q=" data-placeholder="360搜索...">
+                        360
+                    </button>
+                    <button class="engine-btn" data-engine="bing" data-url="https://cn.bing.com/search?q=" data-placeholder="Bing搜索...">
+                        Bing
+                    </button>
+                    <button class="engine-btn" data-engine="yandex" data-url="https://yandex.com/search/?text=" data-placeholder="Yandex搜索...">
+                        Yandex
+                    </button>
+                    <button class="engine-btn" data-engine="duckduckgo" data-url="https://duckduckgo.com/?q=" data-placeholder="DuckDuckGo搜索...">
+                        DuckDuckGo
+                    </button>
+                    <button class="engine-btn" data-engine="shodan" data-url="https://www.shodan.io/search?query=" data-placeholder="Shodan搜索...">
+                        Shodan
+                    </button>
+                </div>
+                
+                <!-- 搜索表单 -->
+                <form class="search-form" id="searchForm">
+                    <input type="text" class="search-input" id="searchInput" 
+                           placeholder="搜索本站网站..." autocomplete="off">
+                    <button type="submit" class="search-btn">搜索</button>
+                </form>
+                
+                <!-- 热门搜索标签 -->
+                <div class="hot-tags">
+                    <span class="hot-tag" onclick="searchByTag('搜索')">搜索</span>
+                    <span class="hot-tag" onclick="searchByTag('AI')">AI</span>
+                    <span class="hot-tag" onclick="searchByTag('购物')">购物</span>
+                    <span class="hot-tag" onclick="searchByTag('技术')">技术</span>
+                    <span class="hot-tag" onclick="searchByTag('云服务')">云服务</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 分类导航区 -->
+    <section class="categories-section">
+        <div class="container">
+            <h2 class="section-title">网站分类</h2>
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- 分类卡片将通过JS动态加载 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 推荐网站区 -->
+    <section class="websites-section">
+        <div class="container">
+            <h2 class="section-title">推荐网站</h2>
+            <div class="websites-grid" id="recommendedGrid">
+                <!-- 网站卡片将通过JS动态加载 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 热门网站区 -->
+    <section class="websites-section">
+        <div class="container">
+            <h2 class="section-title">热门网站</h2>
+            <div class="websites-grid" id="hotGrid">
+                <!-- 网站卡片将通过JS动态加载 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="/about.html">关于我们</a>
+                    <a href="/submit.html">提交网站</a>
+                    <a href="mailto:contact@navsite.com">联系我们</a>
+                </div>
+                <p class="footer-copyright">© 2024 导航站. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast提示 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- JavaScript -->
+    <script src="/js/api-client.js"></script>
+    <script src="/js/components.js"></script>
+    <script>
+        // 当前选择的搜索引擎
+        let currentEngine = 'site';
+        let engineUrl = '';
+        
+        // 搜索引擎切换
+        document.querySelectorAll('.engine-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 移除所有active
+                document.querySelectorAll('.engine-btn').forEach(b => b.classList.remove('active'));
+                // 添加当前active
+                this.classList.add('active');
+                
+                // 更新当前引擎
+                currentEngine = this.dataset.engine;
+                engineUrl = this.dataset.url || '';
+                
+                // 更新placeholder
+                document.getElementById('searchInput').placeholder = this.dataset.placeholder;
+            });
+        });
+        
+        // 搜索表单提交
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const keyword = document.getElementById('searchInput').value.trim();
+            
+            if (!keyword) {
+                components.showToast('请输入搜索关键词', 'warning');
+                return;
+            }
+            
+            if (currentEngine === 'site') {
+                // 本站搜索
+                window.location.href = `/search.html?q=${encodeURIComponent(keyword)}`;
+            } else {
+                // 外部搜索引擎
+                window.open(engineUrl + encodeURIComponent(keyword), '_blank');
+            }
+        });
+
+        // 点击热门标签搜索
+        function searchByTag(tag) {
+            document.getElementById('searchInput').value = tag;
+            
+            if (currentEngine === 'site') {
+                window.location.href = `/search.html?q=${encodeURIComponent(tag)}`;
+            } else {
+                window.open(engineUrl + encodeURIComponent(tag), '_blank');
+            }
+        }
+
+        // 加载分类数据
+        async function loadCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = components.renderLoading();
+
+            try {
+                const result = await api.getCategories();
+
+                if (result.success && result.data.length > 0) {
+                    grid.innerHTML = result.data.map(components.renderCategoryCard).join('');
+                } else {
+                    grid.innerHTML = components.renderEmptyState('暂无分类', '分类数据加载失败或为空');
+                }
+            } catch (error) {
+                grid.innerHTML = components.renderEmptyState('加载失败', '请稍后重试', '😕');
+                components.showToast('加载分类失败', 'error');
+            }
+        }
+
+        // 加载推荐网站
+        async function loadRecommendedWebsites() {
+            const grid = document.getElementById('recommendedGrid');
+            grid.innerHTML = components.renderLoading();
+
+            try {
+                const result = await api.getRecommendedWebsites(12);
+
+                if (result.success && result.data.length > 0) {
+                    grid.innerHTML = result.data.map(components.renderWebsiteCard).join('');
+                } else {
+                    grid.innerHTML = components.renderEmptyState('暂无推荐', '敬请期待更多优质网站');
+                }
+            } catch (error) {
+                grid.innerHTML = components.renderEmptyState('加载失败', '请稍后重试', '😕');
+            }
+        }
+
+        // 加载热门网站
+        async function loadHotWebsites() {
+            const grid = document.getElementById('hotGrid');
+            grid.innerHTML = components.renderLoading();
+
+            try {
+                const result = await api.getHotWebsites(12);
+
+                if (result.success && result.data.length > 0) {
+                    grid.innerHTML = result.data.map(components.renderWebsiteCard).join('');
+                } else {
+                    grid.innerHTML = components.renderEmptyState('暂无热门网站', '敬请期待更多热门网站');
+                }
+            } catch (error) {
+                grid.innerHTML = components.renderEmptyState('加载失败', '请稍后重试', '😕');
+            }
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCategories();
+            loadRecommendedWebsites();
+            loadHotWebsites();
+        });
+    </script>
+</body>
+</html>
