@@ -15,7 +15,7 @@ async function getWebsitesByCategory(categoryId, page, limit) {
         return {
             success: true,
             data: {
-                websites: result.websites.map(escapeObject),
+                websites: result.websites,
                 pagination: result.pagination
             },
             message: '获取成功',
@@ -45,7 +45,7 @@ async function getHotWebsites(limit) {
 
         return {
             success: true,
-            data: websites.map(escapeObject),
+            data: websites,
             message: '获取成功',
             timestamp: new Date().toISOString()
         };

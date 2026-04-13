@@ -33,6 +33,24 @@ function showToast(message, type = 'success', duration = 1500) {
 }
 
 /**
+ * 转义HTML特殊字符 (前端防护)
+ * @param {string} str - 原始字符串
+ * @returns {string} 转义后的字符串
+ */
+function escapeHtml(str) {
+    if (!str || typeof str !== 'string') return str;
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '/': '&#x2F;'
+    };
+    return str.replace(/[&<>"'/]/g, char => map[char]);
+}
+
+/**
  * 加载状态组件
  * @returns {string} HTML字符串
  */
@@ -86,7 +104,7 @@ function renderCategoryCard(category) {
     return `
         <a href="/category.html?id=${category.id}" class="category-card stagger-item">
             <div class="category-icon">${icon}</div>
-            <h3 class="category-name">${category.name}</h3>
+            <h3 class="category-name">${escapeHtml(category.name)}</h3>
             <p class="category-count">${category.website_count} 个网站</p>
         </a>
     `;
@@ -114,20 +132,20 @@ function renderWebsiteCard(website) {
     return `
         <div class="website-card stagger-item">
             <div class="website-header">
-                <div class="website-logo" data-name="${website.name}">
+                <div class="website-logo" data-name="${escapeHtml(website.name)}">
                     ${logoUrl ?
-            `<img src="${logoUrl}" alt="${website.name}" onerror="this.onerror=null; this.style.display='none';this.parentNode.innerText='${firstLetter}';">` :
-            firstLetter
+            `<img src="${encodeURI(logoUrl)}" alt="${escapeHtml(website.name)}" onerror="this.onerror=null; this.style.display='none';this.parentNode.innerText='${escapeHtml(firstLetter)}';">` :
+            escapeHtml(firstLetter)
         }
                 </div>
                 <div class="website-info">
-                    <h3 class="website-name">${website.name}</h3>
+                    <h3 class="website-name">${escapeHtml(website.name)}</h3>
                     <p class="website-stats">👁 ${viewCount} · ❤️ ${favoriteCount}</p>
                 </div>
             </div>
-            <p class="website-description">${website.description}</p>
+            <p class="website-description">${escapeHtml(website.description)}</p>
             <div class="website-actions">
-                <a href="${website.url}" target="_blank" rel="noopener noreferrer" class="visit-btn" onclick="api.visitWebsite(${website.id})">
+                <a href="${encodeURI(website.url)}" target="_blank" rel="noopener noreferrer" class="visit-btn" onclick="api.visitWebsite(${website.id})">
                     访问网站
                 </a>
             </div>

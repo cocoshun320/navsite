@@ -101,7 +101,7 @@ async function getSubmissions(status, page, limit) {
         return {
             success: true,
             data: {
-                submissions: result.submissions.map(escapeObject),
+                submissions: result.submissions,
                 pagination: result.pagination
             },
             message: '获取成功',

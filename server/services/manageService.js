@@ -8,14 +8,14 @@ const { escapeObject } = require('../middleware/validator');
  * @param {number} limit - 每页数量
  * @returns {Object} 网站列表
  */
-async function getAllWebsites(page, limit) {
+async function getAllWebsites(page, limit, categoryId = null) {
     try {
-        const result = await websiteDAO.getAllWebsites(page, limit);
+        const result = await websiteDAO.getAllWebsites(page, limit, categoryId);
 
         return {
             success: true,
             data: {
-                websites: result.websites.map(escapeObject),
+                websites: result.websites,
                 pagination: result.pagination
             },
             message: '获取成功',
@@ -56,7 +56,7 @@ async function getWebsiteById(id) {
 
         return {
             success: true,
-            data: escapeObject(website),
+            data: website,
             message: '获取成功',
             timestamp: new Date().toISOString()
         };

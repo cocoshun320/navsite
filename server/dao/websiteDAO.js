@@ -174,14 +174,22 @@ async function incrementViewCount(id) {
  * 获取所有网站列表（管理用）
  * @param {number} page - 页码
  * @param {number} limit - 每页数量
+ * @param {number} [categoryId] - 分类ID
  * @returns {Object} 网站列表和分页信息
  */
-async function getAllWebsites(page = 1, limit = 20) {
+async function getAllWebsites(page = 1, limit = 20, categoryId = null) {
     const offset = (page - 1) * limit;
+    const params = [];
+    let whereClause = '';
+
+    if (categoryId) {
+        whereClause = 'WHERE w.category_id = ?';
+        params.push(categoryId);
+    }
 
     // 获取总数
-    const countSql = 'SELECT COUNT(*) as total FROM websites';
-    const countResult = await db.queryOne(countSql);
+    const countSql = `SELECT COUNT(*) as total FROM websites ${whereClause.replace('w.', '')}`;
+    const countResult = await db.queryOne(countSql, categoryId ? [categoryId] : []);
     const total = countResult.total;
     const totalPages = Math.ceil(total / limit);
 
@@ -204,10 +212,13 @@ async function getAllWebsites(page = 1, limit = 20) {
             c.name as category_name
         FROM websites w
         LEFT JOIN categories c ON w.category_id = c.id
+        ${whereClause}
         ORDER BY w.created_at DESC
         LIMIT ? OFFSET ?
     `;
-    const websites = await db.query(sql, [limit, offset]);
+
+    params.push(limit, offset);
+    const websites = await db.query(sql, params);
 
     return {
         websites,

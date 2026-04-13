@@ -9,8 +9,9 @@ const manageService = require('../services/manageService');
 router.get('/websites', async (req, res) => {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 20;
+    const categoryId = req.query.category_id ? parseInt(req.query.category_id, 10) : null;
 
-    const result = await manageService.getAllWebsites(page, limit);
+    const result = await manageService.getAllWebsites(page, limit, categoryId);
     res.json(result);
 });
 
