@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/responsive.css">
 </head>
+
 <body>
     <!-- 头部导航 -->
     <header class="header">
@@ -21,6 +23,7 @@
                     <a href="/" class="nav-link">首页</a>
                     <a href="/submit.html" class="nav-link">提交网站</a>
                     <a href="/about.html" class="nav-link">关于我们</a>
+                    <span id="currentTime" class="nav-time">--:--:--</span>
                 </nav>
             </div>
         </div>
@@ -31,8 +34,8 @@
         <div class="container">
             <div class="search-box">
                 <form class="search-form" id="searchForm">
-                    <input type="text" class="search-input" id="searchInput" 
-                           placeholder="输入关键词搜索..." autocomplete="off">
+                    <input type="text" class="search-input" id="searchInput" placeholder="输入关键词搜索..."
+                        autocomplete="off">
                     <button type="submit" class="search-btn">搜索</button>
                 </form>
             </div>
@@ -82,7 +85,7 @@
         }
 
         // 搜索表单提交
-        document.getElementById('searchForm').addEventListener('submit', function(e) {
+        document.getElementById('searchForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const searchKeyword = document.getElementById('searchInput').value.trim();
             if (searchKeyword) {
@@ -127,7 +130,7 @@
                     } else {
                         resultTitle.textContent = `未找到"${keyword}"的相关网站`;
                         grid.innerHTML = components.renderEmptyState('未找到相关网站', '试试其他关键词');
-                        
+
                         // 显示搜索建议
                         if (suggestions && suggestions.length > 0) {
                             grid.innerHTML += `
@@ -153,10 +156,24 @@
             }
         }
 
+        // 更新时钟
+        function updateClock() {
+            const timeEl = document.getElementById('currentTime');
+            if (!timeEl) return;
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            timeEl.textContent = `${h}:${m}:${s}`;
+        }
+
         // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             performSearch(1);
+            updateClock();
+            setInterval(updateClock, 1000);
         });
     </script>
 </body>
+
 </html>

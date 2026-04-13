@@ -38,4 +38,20 @@ router.get('/recommended', async (req, res) => {
     res.json(result);
 });
 
+/**
+ * POST /api/websites/:id/visit
+ * 记录网站访问
+ */
+router.post('/:id/visit', async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+        return res.status(400).json({ success: false, error: { message: '无效的网站ID' } });
+    }
+    const result = await websiteService.incrementWebsiteView(id);
+    if (!result.success) {
+        return res.status(500).json(result);
+    }
+    res.json(result);
+});
+
 module.exports = router;

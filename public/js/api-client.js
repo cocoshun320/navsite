@@ -114,6 +114,17 @@ async function submitWebsite(submission) {
     });
 }
 
+/**
+ * 记录网站访问
+ * @param {number} id - 网站ID
+ * @returns {Promise<Object>} 结果
+ */
+async function visitWebsite(id) {
+    return apiRequest(`/websites/${id}/visit`, {
+        method: 'POST'
+    });
+}
+
 // 导出API方法
 window.api = {
     getCategories,
@@ -122,5 +133,6 @@ window.api = {
     searchWebsites,
     getHotWebsites,
     getRecommendedWebsites,
-    submitWebsite
+    submitWebsite,
+    visitWebsite
 };

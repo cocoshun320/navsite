@@ -90,8 +90,43 @@ async function getRecommendedWebsites(limit) {
     }
 }
 
+/**
+ * 记录网站访问并检查是否需要移动分类
+ * @param {number} id - 网站ID
+ * @returns {Object} 执行结果
+ */
+async function incrementWebsiteView(id) {
+    try {
+        await websiteDAO.incrementViewCount(id);
+        const website = await websiteDAO.getWebsiteById(id);
+
+        // 分类 2 是"常用工具"
+        if (website && website.view_count > 3 && website.category_id !== 2) {
+            website.category_id = 2;
+            await websiteDAO.updateWebsite(id, website);
+        }
+
+        return {
+            success: true,
+            message: '访问记录成功',
+            timestamp: new Date().toISOString()
+        };
+    } catch (error) {
+        console.error('记录网站访问失败:', error);
+        return {
+            success: false,
+            error: {
+                code: 'DATABASE_ERROR',
+                message: '记录网站访问失败'
+            },
+            timestamp: new Date().toISOString()
+        };
+    }
+}
+
 module.exports = {
     getWebsitesByCategory,
     getHotWebsites,
-    getRecommendedWebsites
+    getRecommendedWebsites,
+    incrementWebsiteView
 };

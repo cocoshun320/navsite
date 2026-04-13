@@ -35,4 +35,50 @@ router.get('/', async (req, res) => {
     res.json(result);
 });
 
+/**
+ * POST /api/submissions/:id/approve
+ * 通过提交
+ */
+router.post('/:id/approve', async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+
+    if (isNaN(id)) {
+        return res.json({
+            success: false,
+            error: {
+                code: 'INVALID_ID',
+                message: '无效的提交ID'
+            },
+            timestamp: new Date().toISOString()
+        });
+    }
+
+    const result = await submissionService.approveSubmission(id);
+    res.json(result);
+});
+
+/**
+ * POST /api/submissions/:id/reject
+ * 拒绝提交
+ */
+router.post('/:id/reject', async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+
+    if (isNaN(id)) {
+        return res.json({
+            success: false,
+            error: {
+                code: 'INVALID_ID',
+                message: '无效的提交ID'
+            },
+            timestamp: new Date().toISOString()
+        });
+    }
+
+    const reviewNote = req.body.review_note;
+
+    const result = await submissionService.rejectSubmission(id, reviewNote);
+    res.json(result);
+});
+
 module.exports = router;

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>调试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-btn { padding: 10px 20px; margin: 10px; cursor: pointer; }
+        .log { background: #f5f5f5; padding: 10px; margin-top: 20px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>管理后台按钮调试</h1>
+    
+    <div>
+        <button class="test-btn" onclick="testAddWebsite()">测试添加网站</button>
+        <button class="test-btn" onclick="testLogout()">测试退出登录</button>
+        <button class="test-btn" onclick="testFetch()">测试 API</button>
+    </div>
+    
+    <div class="log" id="log">
+        <p>等待操作...</p>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<p>[${time}] ${message}</p>`;
+            console.log(message);
+        }
+        
+        function testAddWebsite() {
+            log('添加网站按钮被点击');
+            try {
+                if (typeof showWebsiteModal === 'function') {
+                    log('showWebsiteModal 函数存在');
+                    showWebsiteModal();
+                } else {
+                    log('错误: showWebsiteModal 函数不存在');
+                }
+            } catch (error) {
+                log('错误: ' + error.message);
+            }
+        }
+        
+        function testLogout() {
+            log('退出登录按钮被点击');
+            try {
+                if (typeof logout === 'function') {
+                    log('logout 函数存在');
+                    logout();
+                } else {
+                    log('错误: logout 函数不存在');
+                }
+            } catch (error) {
+                log('错误: ' + error.message);
+            }
+        }
+        
+        async function testFetch() {
+            log('开始测试 API...');
+            try {
+                const response = await fetch('/api/categories');
+                const data = await response.json();
+                log('API 响应成功: ' + JSON.stringify(data).substring(0, 100) + '...');
+            } catch (error) {
+                log('API 请求失败: ' + error.message);
+            }
+        }
+        
+        // 检查全局函数
+        window.addEventListener('DOMContentLoaded', function() {
+            log('页面加载完成');
+            log('检查全局函数...');
+            
+            const functions = ['showWebsiteModal', 'logout', 'loadCategories', 'loadWebsites'];
+            functions.forEach(funcName => {
+                if (typeof window[funcName] === 'function') {
+                    log(`✓ ${funcName} 函数存在`);
+                } else {
+                    log(`✗ ${funcName} 函数不存在`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

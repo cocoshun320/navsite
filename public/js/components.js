@@ -80,15 +80,15 @@ function renderCategoryCard(category) {
         'video': '🎬',
         'disk': '💾'
     };
-    
+
     const icon = iconMap[category.icon] || '📁';
-    
+
     return `
-        <div class="category-card stagger-item" onclick="window.location.href='/category.html?id=${category.id}'">
+        <a href="/category.html?id=${category.id}" class="category-card stagger-item">
             <div class="category-icon">${icon}</div>
             <h3 class="category-name">${category.name}</h3>
             <p class="category-count">${category.website_count} 个网站</p>
-        </div>
+        </a>
     `;
 }
 
@@ -102,14 +102,23 @@ function renderWebsiteCard(website) {
     const viewCount = formatNumber(website.view_count);
     const favoriteCount = formatNumber(website.favorite_count);
 
+    // 获取域名用于提取图标
+    let domain = '';
+    try {
+        domain = new URL(website.url).hostname;
+    } catch (e) { }
+
+    // 如果没有配置logo_url，且有域名，尝试使用favicon服务，如果出错则降级显示首字母
+    const logoUrl = website.logo_url || (domain ? `https://api.iowen.cn/favicon/${domain}.png` : '');
+
     return `
         <div class="website-card stagger-item">
             <div class="website-header">
                 <div class="website-logo" data-name="${website.name}">
-                    ${website.logo_url ? 
-                        `<img src="${website.logo_url}" alt="${website.name}" onerror="this.style.display='none';this.parentNode.innerText='${firstLetter}';">` : 
-                        firstLetter
-                    }
+                    ${logoUrl ?
+            `<img src="${logoUrl}" alt="${website.name}" onerror="this.onerror=null; this.style.display='none';this.parentNode.innerText='${firstLetter}';">` :
+            firstLetter
+        }
                 </div>
                 <div class="website-info">
                     <h3 class="website-name">${website.name}</h3>
@@ -118,7 +127,7 @@ function renderWebsiteCard(website) {
             </div>
             <p class="website-description">${website.description}</p>
             <div class="website-actions">
-                <a href="${website.url}" target="_blank" rel="noopener noreferrer" class="visit-btn">
+                <a href="${website.url}" target="_blank" rel="noopener noreferrer" class="visit-btn" onclick="api.visitWebsite(${website.id})">
                     访问网站
                 </a>
             </div>
@@ -224,7 +233,7 @@ function debounce(func, wait) {
  */
 function throttle(func, limit) {
     let inThrottle;
-    return function(...args) {
+    return function (...args) {
         if (!inThrottle) {
             func.apply(this, args);
             inThrottle = true;

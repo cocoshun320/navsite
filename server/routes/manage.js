@@ -111,4 +111,71 @@ router.delete('/websites/:id', async (req, res) => {
     res.json(result);
 });
 
+/**
+ * POST /api/manage/categories
+ * 创建分类
+ */
+router.post('/categories', async (req, res) => {
+    const category = {
+        name: req.body.name,
+        icon: req.body.icon,
+        description: req.body.description,
+        sort_order: req.body.sort_order || 0
+    };
+
+    const result = await manageService.createCategory(category);
+    res.json(result);
+});
+
+/**
+ * PUT /api/manage/categories/:id
+ * 更新分类
+ */
+router.put('/categories/:id', async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+
+    if (isNaN(id)) {
+        return res.json({
+            success: false,
+            error: {
+                code: 'INVALID_ID',
+                message: '无效的分类ID'
+            },
+            timestamp: new Date().toISOString()
+        });
+    }
+
+    const category = {
+        name: req.body.name,
+        icon: req.body.icon,
+        description: req.body.description,
+        sort_order: req.body.sort_order
+    };
+
+    const result = await manageService.updateCategory(id, category);
+    res.json(result);
+});
+
+/**
+ * DELETE /api/manage/categories/:id
+ * 删除分类
+ */
+router.delete('/categories/:id', async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+
+    if (isNaN(id)) {
+        return res.json({
+            success: false,
+            error: {
+                code: 'INVALID_ID',
+                message: '无效的分类ID'
+            },
+            timestamp: new Date().toISOString()
+        });
+    }
+
+    const result = await manageService.deleteCategory(id);
+    res.json(result);
+});
+
 module.exports = router;

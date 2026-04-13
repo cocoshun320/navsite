@@ -2,13 +2,14 @@
 
 /* 淡入 */
 .fade-in {
-    animation: fadeIn var(--transition-normal) ease-out;
+    animation: fadeIn var(--transition-normal);
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -16,13 +17,14 @@
 
 /* 淡出 */
 .fade-out {
-    animation: fadeOut var(--transition-normal) ease-out;
+    animation: fadeOut var(--transition-normal);
 }
 
 @keyframes fadeOut {
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }
@@ -30,7 +32,7 @@
 
 /* 滑入 */
 .slide-in {
-    animation: slideIn var(--transition-normal) ease-out;
+    animation: slideIn var(--transition-normal);
 }
 
 @keyframes slideIn {
@@ -38,6 +40,7 @@
         transform: translateY(-20px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -46,7 +49,7 @@
 
 /* 滑出 */
 .slide-out {
-    animation: slideOut var(--transition-normal) ease-out;
+    animation: slideOut var(--transition-normal);
 }
 
 @keyframes slideOut {
@@ -54,6 +57,7 @@
         transform: translateY(0);
         opacity: 1;
     }
+
     to {
         transform: translateY(-20px);
         opacity: 0;
@@ -62,7 +66,7 @@
 
 /* 缩放 */
 .scale-in {
-    animation: scaleIn var(--transition-normal) ease-out;
+    animation: scaleIn var(--transition-normal);
 }
 
 @keyframes scaleIn {
@@ -70,6 +74,7 @@
         transform: scale(0.9);
         opacity: 0;
     }
+
     to {
         transform: scale(1);
         opacity: 1;
@@ -85,15 +90,19 @@
     0% {
         transform: translateY(0);
     }
+
     25% {
         transform: translateY(-10px);
     }
+
     50% {
         transform: translateY(0);
     }
+
     75% {
         transform: translateY(-5px);
     }
+
     100% {
         transform: translateY(0);
     }
@@ -108,9 +117,11 @@
     0% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.5;
     }
+
     100% {
         opacity: 1;
     }
@@ -125,6 +136,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -136,13 +148,24 @@
 }
 
 @keyframes shake {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateX(0);
     }
-    10%, 30%, 50%, 70%, 90% {
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
         transform: translateX(-5px);
     }
-    20%, 40%, 60%, 80% {
+
+    20%,
+    40%,
+    60%,
+    80% {
         transform: translateX(5px);
     }
 }
@@ -158,9 +181,11 @@
     0% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
+
     100% {
         background-position: 0% 50%;
     }
@@ -178,15 +203,19 @@
     from {
         width: 0;
     }
+
     to {
         width: 100%;
     }
 }
 
 @keyframes blink-caret {
-    from, to {
+
+    from,
+    to {
         border-color: transparent;
     }
+
     50% {
         border-color: var(--primary-color);
     }
@@ -203,6 +232,7 @@
     0% {
         background-position: 200% 0;
     }
+
     100% {
         background-position: -200% 0;
     }
@@ -211,23 +241,47 @@
 /* 交错动画 */
 .stagger-item {
     opacity: 0;
-    animation: staggerIn var(--transition-normal) ease-out forwards;
+    animation: staggerIn var(--transition-normal) forwards;
 }
 
-.stagger-item:nth-child(1) { animation-delay: 0ms; }
-.stagger-item:nth-child(2) { animation-delay: 50ms; }
-.stagger-item:nth-child(3) { animation-delay: 100ms; }
-.stagger-item:nth-child(4) { animation-delay: 150ms; }
-.stagger-item:nth-child(5) { animation-delay: 200ms; }
-.stagger-item:nth-child(6) { animation-delay: 250ms; }
-.stagger-item:nth-child(7) { animation-delay: 300ms; }
-.stagger-item:nth-child(8) { animation-delay: 350ms; }
+.stagger-item:nth-child(1) {
+    animation-delay: 0ms;
+}
+
+.stagger-item:nth-child(2) {
+    animation-delay: 50ms;
+}
+
+.stagger-item:nth-child(3) {
+    animation-delay: 100ms;
+}
+
+.stagger-item:nth-child(4) {
+    animation-delay: 150ms;
+}
+
+.stagger-item:nth-child(5) {
+    animation-delay: 200ms;
+}
+
+.stagger-item:nth-child(6) {
+    animation-delay: 250ms;
+}
+
+.stagger-item:nth-child(7) {
+    animation-delay: 300ms;
+}
+
+.stagger-item:nth-child(8) {
+    animation-delay: 350ms;
+}
 
 @keyframes staggerIn {
     from {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

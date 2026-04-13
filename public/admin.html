@@ -1,111 +1,338 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>后台管理 - 网站导航</title>
+    <title>管理后台 - 网站导航</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f7fa; }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 16px 0;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a1f36 0%, #252b48 100%);
+            color: white;
+            padding: 20px 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-logo h1 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 102, 255, 0.2);
+            border-left-color: #0066FF;
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* 主内容区 */
+        .main {
+            margin-left: 240px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h2 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-info span {
+            color: #666;
+        }
+
+        .btn-logout {
+            padding: 6px 16px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .btn-logout:hover {
+            background: #e0e0e0;
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stat-card .trend {
+            font-size: 12px;
+            color: #52c41a;
+            margin-top: 4px;
+        }
+
+        /* 工具栏 */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+
+        .toolbar-left {
+            display: flex;
+            gap: 12px;
+        }
+
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            width: 240px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0066FF;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #0066FF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0052CC;
+        }
+
+        .btn-default {
+            background: white;
+            border: 1px solid #d9d9d9;
+            color: #333;
+        }
+
+        .btn-default:hover {
+            border-color: #0066FF;
+            color: #0066FF;
+        }
+
+        .btn-danger {
+            background: #ff4d4f;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff7875;
+        }
+
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 12px;
+        }
+
+        /* 表格 */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
-        .header h1 { font-size: 20px; }
-        
-        .header button {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
+
+        .card-header h3 {
+            font-size: 16px;
+            font-weight: 500;
         }
-        
-        .content {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-        
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        
-        .toolbar input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 300px;
-        }
-        
-        .toolbar button {
-            padding: 8px 16px;
-            background: #0066FF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
+
         table {
             width: 100%;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-collapse: collapse;
         }
-        
-        th, td {
-            padding: 12px;
+
+        th,
+        td {
+            padding: 12px 16px;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f0f0f0;
         }
-        
-        th { background: #f8f9fa; font-weight: 600; }
-        
-        .btn {
-            padding: 4px 12px;
-            border: none;
+
+        th {
+            background: #fafafa;
+            font-weight: 500;
+            color: #666;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
             border-radius: 4px;
-            cursor: pointer;
             font-size: 12px;
         }
-        
-        .btn-edit { background: #0066FF; color: white; }
-        .btn-delete { background: #FF4444; color: white; }
-        
-        .pagination {
-            margin-top: 20px;
-            text-align: center;
+
+        .status-approved {
+            background: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
         }
-        
+
+        .status-pending {
+            background: #fffbe6;
+            color: #faad14;
+            border: 1px solid #ffe58f;
+        }
+
+        .status-rejected {
+            background: #fff2f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 分页 */
+        .pagination {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+        }
+
         .pagination button {
-            padding: 8px 12px;
-            margin: 0 4px;
-            border: 1px solid #ddd;
+            padding: 6px 12px;
+            border: 1px solid #d9d9d9;
             background: white;
             border-radius: 4px;
             cursor: pointer;
         }
-        
-        .pagination button.active { background: #0066FF; color: white; }
-        
+
+        .pagination button:hover {
+            border-color: #0066FF;
+        }
+
+        .pagination button.active {
+            background: #0066FF;
+            color: white;
+            border-color: #0066FF;
+        }
+
+        .pagination button:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
         /* 模态框 */
         .modal {
             display: none;
@@ -114,447 +341,1027 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
-        
-        .modal.show { display: flex; align-items: center; justify-content: center; }
-        
+
+        .modal.show {
+            display: flex;
+        }
+
         .modal-content {
             background: white;
             border-radius: 8px;
-            padding: 24px;
             width: 90%;
             max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
         }
-        
+
         .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f0f0f0;
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            align-items: center;
         }
-        
-        .modal-header h2 { font-size: 20px; }
-        
-        .modal-header button {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        
-        .form-group { margin-bottom: 16px; }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 4px;
+
+        .modal-header h2 {
+            font-size: 18px;
             font-weight: 500;
         }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
         }
-        
-        .form-group textarea { min-height: 100px; }
-        
-        .checkbox-group { display: flex; gap: 16px; }
-        
-        .checkbox-group label { display: flex; align-items: center; gap: 4px; }
-        
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .form-group label .required {
+            color: #ff4d4f;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #0066FF;
+            box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
         .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #f0f0f0;
             display: flex;
             justify-content: flex-end;
-            gap: 8px;
-            margin-top: 20px;
+            gap: 12px;
         }
-        
-        .btn-cancel {
-            padding: 8px 16px;
-            background: #666;
+
+        /* 页面切换 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: #333;
             color: white;
-            border: none;
             border-radius: 4px;
-            cursor: pointer;
+            z-index: 2000;
+            animation: slideIn 0.3s;
         }
-        
-        .btn-save {
-            padding: 8px 16px;
-            background: #0066FF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+
+        .toast.success {
+            background: #52c41a;
         }
-        
-        .status-approved { color: green; }
-        .status-pending { color: orange; }
-        .status-rejected { color: red; }
+
+        .toast.error {
+            background: #ff4d4f;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
+
 <body>
-    <div class="header">
-        <div class="header-content">
-            <h1>后台管理</h1>
-            <div>
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <h1>🌐 管理后台</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" data-page="dashboard">
+                <span class="nav-icon">📊</span>
+                <span>数据概览</span>
+            </li>
+            <li class="nav-item" data-page="websites">
+                <span class="nav-icon">🌐</span>
+                <span>网站管理</span>
+            </li>
+            <li class="nav-item" data-page="categories">
+                <span class="nav-icon">📁</span>
+                <span>分类管理</span>
+            </li>
+            <li class="nav-item" data-page="submissions">
+                <span class="nav-icon">📝</span>
+                <span>提交审核</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main">
+        <div class="header">
+            <h2 id="pageTitle">数据概览</h2>
+            <div class="user-info">
+                <span id="currentTime" style="margin-right: 16px; font-family: monospace; background: #f5f7fa; padding: 4px 12px; border: 1px solid #e8e8e8; border-radius: 4px; color: #666; font-size: 14px;">--:--:--</span>
                 <span id="username">管理员</span>
-                <button onclick="logout()">退出登录</button>
+                <button class="btn-logout" onclick="window.logout()">退出登录</button>
             </div>
         </div>
-    </div>
-    
-    <div class="content">
-        <div class="toolbar">
-            <div>
-                <input type="text" id="searchInput" placeholder="搜索网站名称...">
-                <button onclick="search()">搜索</button>
-            </div>
-            <button onclick="showAddModal()">+ 添加网站</button>
-        </div>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>名称</th>
-                    <th>URL</th>
-                    <th>分类</th>
-                    <th>状态</th>
-                    <th>热门</th>
-                    <th>推荐</th>
-                    <th>访问量</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                <tr><td colspan="9" style="text-align:center;">加载中...</td></tr>
-            </tbody>
-        </table>
-        
-        <div class="pagination" id="pagination"></div>
-    </div>
-    
-    <!-- 添加/编辑模态框 -->
-    <div class="modal" id="editModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">添加网站</h2>
-                <button onclick="closeModal()">&times;</button>
-            </div>
-            
-            <form id="websiteForm">
-                <input type="hidden" id="websiteId">
-                
-                <div class="form-group">
-                    <label>网站名称 *</label>
-                    <input type="text" id="name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>网站URL *</label>
-                    <input type="url" id="url" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>分类 *</label>
-                    <select id="category" required>
-                        <option value="">请选择</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>描述 *</label>
-                    <textarea id="description" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Logo URL</label>
-                    <input type="url" id="logo">
-                </div>
-                
-                <div class="form-group">
-                    <label>状态</label>
-                    <select id="status">
-                        <option value="approved">已通过</option>
-                        <option value="pending">待审核</option>
-                        <option value="rejected">已拒绝</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>标记</label>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" id="isHot"> 热门</label>
-                        <label><input type="checkbox" id="isRecommended"> 推荐</label>
+
+        <div class="content">
+            <!-- 数据概览页 -->
+            <div class="page active" id="page-dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>网站总数</h3>
+                        <div class="value" id="statWebsites">-</div>
+                        <div class="trend">已收录网站</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>分类数量</h3>
+                        <div class="value" id="statCategories">-</div>
+                        <div class="trend">网站分类</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>待审核</h3>
+                        <div class="value" id="statPending">-</div>
+                        <div class="trend">提交申请</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>总访问量</h3>
+                        <div class="value" id="statViews">-</div>
+                        <div class="trend">累计访问</div>
                     </div>
                 </div>
-                
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>最新添加的网站</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>分类</th>
+                                <th>状态</th>
+                                <th>添加时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentWebsites">
+                            <tr>
+                                <td colspan="4" style="text-align:center;">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 网站管理页 -->
+            <div class="page" id="page-websites">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>网站列表</h3>
+                        <button class="btn btn-primary" onclick="window.showWebsiteModal()">+ 添加网站</button>
+                    </div>
+                    <div style="padding: 16px 20px; border-bottom: 1px solid #f0f0f0;">
+                        <div class="toolbar">
+                            <div class="toolbar-left">
+                                <input type="text" class="search-input" id="websiteSearch" placeholder="搜索网站名称...">
+                                <select class="form-control" id="websiteCategoryFilter" style="width: 150px;">
+                                    <option value="">全部分类</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-default" onclick="window.loadWebsites()">刷新</button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>名称</th>
+                                <th>URL</th>
+                                <th>分类</th>
+                                <th>状态</th>
+                                <th>热门</th>
+                                <th>推荐</th>
+                                <th>访问量</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="websitesTable">
+                            <tr>
+                                <td colspan="9" style="text-align:center;">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="websitesPagination"></div>
+                </div>
+            </div>
+
+            <!-- 分类管理页 -->
+            <div class="page" id="page-categories">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>分类列表</h3>
+                        <button class="btn btn-primary" onclick="window.showCategoryModal()">+ 添加分类</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>名称</th>
+                                <th>图标</th>
+                                <th>网站数量</th>
+                                <th>排序</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriesTable">
+                            <tr>
+                                <td colspan="6" style="text-align:center;">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 提交审核页 -->
+            <div class="page" id="page-submissions">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>待审核提交</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>网站名称</th>
+                                <th>URL</th>
+                                <th>分类</th>
+                                <th>提交时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="submissionsTable">
+                            <tr>
+                                <td colspan="6" style="text-align:center;">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="submissionsPagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 网站模态框 -->
+    <div class="modal" id="websiteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="websiteModalTitle">添加网站</h2>
+                <button class="modal-close" onclick="window.closeModal('websiteModal')">&times;</button>
+            </div>
+            <form id="websiteForm">
+                <div class="modal-body">
+                    <input type="hidden" id="websiteId">
+                    <div class="form-group">
+                        <label>网站名称 <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="websiteName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>网站URL <span class="required">*</span></label>
+                        <input type="url" class="form-control" id="websiteUrl" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>分类 <span class="required">*</span></label>
+                            <select class="form-control" id="websiteCategory" required>
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>状态</label>
+                            <select class="form-control" id="websiteStatus">
+                                <option value="approved">已通过</option>
+                                <option value="pending">待审核</option>
+                                <option value="rejected">已拒绝</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>描述 <span class="required">*</span></label>
+                        <textarea class="form-control" id="websiteDescription" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Logo URL</label>
+                        <input type="url" class="form-control" id="websiteLogo">
+                    </div>
+                    <div class="form-group">
+                        <label>标记</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" id="websiteIsHot"> 热门</label>
+                            <label><input type="checkbox" id="websiteIsRecommended"> 推荐</label>
+                        </div>
+                    </div>
+                </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-cancel" onclick="closeModal()">取消</button>
-                    <button type="submit" class="btn-save">保存</button>
+                    <button type="button" class="btn btn-default"
+                        onclick="window.closeModal('websiteModal')">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 分类模态框 -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="categoryModalTitle">添加分类</h2>
+                <button class="modal-close" onclick="window.closeModal('categoryModal')">&times;</button>
+            </div>
+            <form id="categoryForm">
+                <div class="modal-body">
+                    <input type="hidden" id="categoryId">
+                    <div class="form-group">
+                        <label>分类名称 <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="categoryName" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>图标</label>
+                            <select class="form-control" id="categoryIcon">
+                                <option value="search">🔍 搜索</option>
+                                <option value="tools">🛠️ 工具</option>
+                                <option value="shopping">🛒 购物</option>
+                                <option value="code">💻 编程</option>
+                                <option value="ai">🤖 AI</option>
+                                <option value="cloud">☁️ 云服务</option>
+                                <option value="office">📚 办公</option>
+                                <option value="video">🎬 影音</option>
+                                <option value="disk">💾 网盘</option>
+                                <option value="star">⭐ 收藏</option>
+                                <option value="game">🎮 游戏</option>
+                                <option value="news">📰 新闻</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>排序</label>
+                            <input type="number" class="form-control" id="categorySortOrder" value="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>描述</label>
+                        <textarea class="form-control" id="categoryDescription"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                        onclick="window.closeModal('categoryModal')">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        let currentPage = 1;
-        const limit = 20;
         let categories = [];
-        
+        let currentWebsitePage = 1;
+        let currentSubmissionPage = 1;
+        const limit = 20;
+
         // 检查登录
-        function checkLogin() {
-            const loggedIn = localStorage.getItem('adminLoggedIn');
-            const username = localStorage.getItem('adminUsername');
-            
-            if (!loggedIn || loggedIn !== 'true') {
+        async function checkLogin() {
+            try {
+                const res = await fetch('/api/admin/check');
+                const result = await res.json();
+                if (!result.success) {
+                    window.location.href = '/login.html';
+                    return false;
+                }
+                document.getElementById('username').textContent = result.data.username || '管理员';
+                return true;
+            } catch (err) {
                 window.location.href = '/login.html';
                 return false;
             }
-            
-            document.getElementById('username').textContent = username || '管理员';
-            return true;
         }
-        
+
         // 登出
-        function logout() {
-            localStorage.removeItem('adminLoggedIn');
-            localStorage.removeItem('adminUsername');
-            window.location.href = '/login.html';
+        async function logout() {
+            try {
+                await fetch('/api/admin/logout', { method: 'POST' });
+                window.location.href = '/login.html';
+            } catch (err) {
+                window.location.href = '/login.html';
+            }
         }
-        
-        // 加载分类
+
+        // Toast 提示
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // 关闭模态框
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        // 加载分类列表
         async function loadCategories() {
             try {
-                const res = await fetch('/api/categories');
+                const res = await fetch(`/api/categories?_=${Date.now()}`);
                 const result = await res.json();
-                
+
                 if (result.success) {
                     categories = result.data;
-                    const select = document.getElementById('category');
-                    select.innerHTML = '<option value="">请选择</option>';
-                    result.data.forEach(cat => {
-                        select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+
+                    // 更新分类选择框
+                    const selects = ['websiteCategory', 'websiteCategoryFilter'];
+                    selects.forEach(id => {
+                        const select = document.getElementById(id);
+                        if (select) {
+                            const defaultOption = id === 'websiteCategoryFilter' ? '<option value="">全部分类</option>' : '<option value="">请选择</option>';
+                            select.innerHTML = defaultOption + result.data.map(c =>
+                                `<option value="${c.id}">${c.name}</option>`
+                            ).join('');
+                        }
                     });
+
+                    // 更新分类表格
+                    const tbody = document.getElementById('categoriesTable');
+                    tbody.innerHTML = result.data.map(c => `
+                        <tr>
+                            <td>${c.id}</td>
+                            <td>${c.name}</td>
+                            <td>${getIconEmoji(c.icon)}</td>
+                            <td>${c.website_count}</td>
+                            <td>${c.sort_order}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn btn-default btn-sm" onclick="window.editCategory(${c.id})">编辑</button>
+                                    <button class="btn btn-danger btn-sm" onclick="window.deleteCategory(${c.id})">删除</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
                 }
             } catch (error) {
                 console.error('加载分类失败:', error);
             }
         }
-        
+
+        // 获取图标 emoji
+        function getIconEmoji(icon) {
+            const map = {
+                'search': '🔍', 'tools': '🛠️', 'shopping': '🛒', 'code': '💻',
+                'ai': '🤖', 'cloud': '☁️', 'office': '📚', 'video': '🎬',
+                'disk': '💾', 'star': '⭐', 'game': '🎮', 'news': '📰'
+            };
+            return map[icon] || '📁';
+        }
+
+        // 加载数据概览
+        async function loadDashboard() {
+            try {
+                // 加载统计
+                const [catRes, webRes, subRes] = await Promise.all([
+                    fetch(`/api/categories?_=${Date.now()}`),
+                    fetch(`/api/manage/websites?page=1&limit=1&_=${Date.now()}`),
+                    fetch(`/api/submissions?status=pending&page=1&limit=1&_=${Date.now()}`)
+                ]);
+
+                const catResult = await catRes.json();
+                const webResult = await webRes.json();
+                const subResult = await subRes.json();
+
+                if (catResult.success) {
+                    document.getElementById('statCategories').textContent = catResult.data.length;
+                    document.getElementById('statWebsites').textContent =
+                        catResult.data.reduce((sum, c) => sum + c.website_count, 0);
+                }
+
+                if (subResult.success) {
+                    document.getElementById('statPending').textContent = subResult.data.pagination.total;
+                }
+                
+                // 加载最新网站
+                const recentRes = await fetch(`/api/manage/websites?page=1&limit=5&_=${Date.now()}`);
+                const recentResult = await recentRes.json();
+
+                if (recentResult.success) {
+                    const tbody = document.getElementById('recentWebsites');
+                    if (recentResult.data.websites.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">暂无数据</td></tr>';
+                    } else {
+                        tbody.innerHTML = recentResult.data.websites.map(w => `
+                            <tr>
+                                <td>${w.name}</td>
+                                <td>${w.category_name || '-'}</td>
+                                <td><span class="status-badge status-${w.status}">${getStatusText(w.status)}</span></td>
+                                <td>${formatDate(w.created_at)}</td>
+                            </tr>
+                        `).join('');
+                    }
+
+                    // 计算总访问量
+                    const viewsRes = await fetch('/api/manage/websites?page=1&limit=1000');
+                    const viewsResult = await viewsRes.json();
+                    if (viewsResult.success) {
+                        const totalViews = viewsResult.data.websites.reduce((sum, w) => sum + (w.view_count || 0), 0);
+                        document.getElementById('statViews').textContent = formatNumber(totalViews);
+                    }
+                }
+            } catch (error) {
+                console.error('加载概览失败:', error);
+            }
+        }
+
         // 加载网站列表
         async function loadWebsites(page = 1) {
-            currentPage = page;
-            const tbody = document.getElementById('tableBody');
+            currentWebsitePage = page;
+            const tbody = document.getElementById('websitesTable');
             tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">加载中...</td></tr>';
-            
+
             try {
-                const res = await fetch(`/api/manage/websites?page=${page}&limit=${limit}`);
+                const res = await fetch(`/api/manage/websites?page=${page}&limit=${limit}&_=${Date.now()}`);
                 const result = await res.json();
-                
+
                 if (result.success) {
                     const { websites, pagination } = result.data;
-                    
+
                     if (websites.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">暂无数据</td></tr>';
-                        return;
+                    } else {
+                        tbody.innerHTML = websites.map(w => `
+                            <tr>
+                                <td>${w.id}</td>
+                                <td>${w.name}</td>
+                                <td><a href="${w.url}" target="_blank" style="color: #0066FF;">${w.url}</a></td>
+                                <td>${w.category_name || '-'}</td>
+                                <td><span class="status-badge status-${w.status}">${getStatusText(w.status)}</span></td>
+                                <td>${w.is_hot ? '✓' : '-'}</td>
+                                <td>${w.is_recommended ? '✓' : '-'}</td>
+                                <td>${formatNumber(w.view_count)}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn btn-default btn-sm" onclick="window.editWebsite(${w.id})">编辑</button>
+                                        <button class="btn btn-danger btn-sm" onclick="window.deleteWebsite(${w.id})">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('');
                     }
-                    
-                    tbody.innerHTML = websites.map(site => `
-                        <tr>
-                            <td>${site.id}</td>
-                            <td>${site.name}</td>
-                            <td><a href="${site.url}" target="_blank">${site.url}</a></td>
-                            <td>${site.category_name || '-'}</td>
-                            <td><span class="status-${site.status}">${getStatusText(site.status)}</span></td>
-                            <td>${site.is_hot ? '✓' : '-'}</td>
-                            <td>${site.is_recommended ? '✓' : '-'}</td>
-                            <td>${site.view_count}</td>
-                            <td>
-                                <button class="btn btn-edit" onclick="editWebsite(${site.id})">编辑</button>
-                                <button class="btn btn-delete" onclick="deleteWebsite(${site.id})">删除</button>
-                            </td>
-                        </tr>
-                    `).join('');
-                    
-                    renderPagination(pagination);
-                } else {
-                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">${result.error.message}</td></tr>`;
+
+                    renderPagination('websitesPagination', pagination, loadWebsites);
                 }
             } catch (error) {
                 console.error('加载网站失败:', error);
                 tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">加载失败</td></tr>';
             }
         }
-        
-        // 获取状态文本
-        function getStatusText(status) {
-            const map = {
-                'approved': '已通过',
-                'pending': '待审核',
-                'rejected': '已拒绝'
-            };
-            return map[status] || status;
+
+        // 加载提交列表
+        async function loadSubmissions(page = 1) {
+            currentSubmissionPage = page;
+            const tbody = document.getElementById('submissionsTable');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">加载中...</td></tr>';
+
+            try {
+                const res = await fetch(`/api/submissions?status=pending&page=${page}&limit=${limit}&_=${Date.now()}`);
+                const result = await res.json();
+
+                if (result.success) {
+                    const { submissions, pagination } = result.data;
+
+                    if (submissions.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">暂无待审核提交</td></tr>';
+                    } else {
+                        tbody.innerHTML = submissions.map(s => `
+                            <tr>
+                                <td>${s.id}</td>
+                                <td>${s.name}</td>
+                                <td><a href="${s.url}" target="_blank" style="color: #0066FF;">${s.url}</a></td>
+                                <td>${s.category_name || '-'}</td>
+                                <td>${formatDate(s.created_at)}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn btn-primary btn-sm" onclick="window.approveSubmission(${s.id})">通过</button>
+                                        <button class="btn btn-danger btn-sm" onclick="window.rejectSubmission(${s.id})">拒绝</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
+
+                    renderPagination('submissionsPagination', pagination, loadSubmissions);
+                }
+            } catch (error) {
+                console.error('加载提交失败:', error);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">加载失败</td></tr>';
+            }
         }
-        
+
         // 渲染分页
-        function renderPagination(pagination) {
-            const container = document.getElementById('pagination');
+        function renderPagination(containerId, pagination, callback) {
+            const container = document.getElementById(containerId);
             const { page, totalPages } = pagination;
-            
+
             if (totalPages <= 1) {
                 container.innerHTML = '';
                 return;
             }
-            
+
             let html = '';
-            
+
             if (page > 1) {
-                html += `<button onclick="loadWebsites(${page - 1})">上一页</button>`;
+                html += `<button onclick="window.${callback.name}(${page - 1})">上一页</button>`;
             }
-            
+
             for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) {
-                html += `<button class="${i === page ? 'active' : ''}" onclick="loadWebsites(${i})">${i}</button>`;
+                html += `<button class="${i === page ? 'active' : ''}" onclick="window.${callback.name}(${i})">${i}</button>`;
             }
-            
+
             if (page < totalPages) {
-                html += `<button onclick="loadWebsites(${page + 1})">下一页</button>`;
+                html += `<button onclick="window.${callback.name}(${page + 1})">下一页</button>`;
             }
-            
+
             container.innerHTML = html;
         }
-        
-        // 搜索
-        function search() {
-            const keyword = document.getElementById('searchInput').value.trim();
-            if (keyword) {
-                window.location.href = `/search.html?q=${encodeURIComponent(keyword)}`;
-            }
-        }
-        
-        // 显示添加模态框
-        function showAddModal() {
-            document.getElementById('modalTitle').textContent = '添加网站';
+
+        // 显示网站模态框
+        function showWebsiteModal() {
+            document.getElementById('websiteModalTitle').textContent = '添加网站';
             document.getElementById('websiteForm').reset();
             document.getElementById('websiteId').value = '';
-            document.getElementById('editModal').classList.add('show');
+            document.getElementById('websiteModal').classList.add('show');
         }
-        
+
         // 编辑网站
         async function editWebsite(id) {
             try {
                 const res = await fetch(`/api/manage/websites/${id}`);
                 const result = await res.json();
-                
+
                 if (result.success) {
-                    const site = result.data;
-                    
-                    document.getElementById('modalTitle').textContent = '编辑网站';
-                    document.getElementById('websiteId').value = site.id;
-                    document.getElementById('name').value = site.name;
-                    document.getElementById('url').value = site.url;
-                    document.getElementById('category').value = site.category_id;
-                    document.getElementById('description').value = site.description;
-                    document.getElementById('logo').value = site.logo_url || '';
-                    document.getElementById('status').value = site.status;
-                    document.getElementById('isHot').checked = site.is_hot;
-                    document.getElementById('isRecommended').checked = site.is_recommended;
-                    
-                    document.getElementById('editModal').classList.add('show');
-                } else {
-                    alert(result.error.message);
+                    const w = result.data;
+                    document.getElementById('websiteModalTitle').textContent = '编辑网站';
+                    document.getElementById('websiteId').value = w.id;
+                    document.getElementById('websiteName').value = w.name;
+                    document.getElementById('websiteUrl').value = w.url;
+                    document.getElementById('websiteCategory').value = w.category_id;
+                    document.getElementById('websiteDescription').value = w.description;
+                    document.getElementById('websiteLogo').value = w.logo_url || '';
+                    document.getElementById('websiteStatus').value = w.status;
+                    document.getElementById('websiteIsHot').checked = w.is_hot;
+                    document.getElementById('websiteIsRecommended').checked = w.is_recommended;
+                    document.getElementById('websiteModal').classList.add('show');
                 }
             } catch (error) {
-                console.error('获取网站信息失败:', error);
-                alert('获取网站信息失败');
+                showToast('获取网站信息失败', 'error');
             }
         }
-        
+
         // 删除网站
         async function deleteWebsite(id) {
-            if (!confirm('确定要删除这个网站吗？')) {
-                return;
-            }
-            
+            if (!confirm('确定要删除这个网站吗？')) return;
+
             try {
-                const res = await fetch(`/api/manage/websites/${id}`, {
-                    method: 'DELETE'
-                });
+                const res = await fetch(`/api/manage/websites/${id}`, { method: 'DELETE' });
                 const result = await res.json();
-                
+
                 if (result.success) {
-                    alert('删除成功');
-                    loadWebsites(currentPage);
+                    showToast('删除成功');
+                    loadWebsites(currentWebsitePage);
                 } else {
-                    alert(result.error.message);
+                    showToast(result.error.message, 'error');
                 }
             } catch (error) {
-                console.error('删除失败:', error);
-                alert('删除失败');
+                showToast('删除失败', 'error');
             }
         }
-        
-        // 关闭模态框
-        function closeModal() {
-            document.getElementById('editModal').classList.remove('show');
+
+        // 显示分类模态框
+        function showCategoryModal() {
+            document.getElementById('categoryModalTitle').textContent = '添加分类';
+            document.getElementById('categoryForm').reset();
+            document.getElementById('categoryId').value = '';
+            document.getElementById('categoryModal').classList.add('show');
         }
-        
-        // 表单提交
-        document.getElementById('websiteForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const id = document.getElementById('websiteId').value;
-            const website = {
-                name: document.getElementById('name').value.trim(),
-                url: document.getElementById('url').value.trim(),
-                category_id: parseInt(document.getElementById('category').value),
-                description: document.getElementById('description').value.trim(),
-                logo_url: document.getElementById('logo').value.trim(),
-                status: document.getElementById('status').value,
-                is_hot: document.getElementById('isHot').checked,
-                is_recommended: document.getElementById('isRecommended').checked
+
+        // 编辑分类
+        async function editCategory(id) {
+            const category = categories.find(c => c.id === id);
+            if (category) {
+                document.getElementById('categoryModalTitle').textContent = '编辑分类';
+                document.getElementById('categoryId').value = category.id;
+                document.getElementById('categoryName').value = category.name;
+                document.getElementById('categoryIcon').value = category.icon;
+                document.getElementById('categorySortOrder').value = category.sort_order;
+                document.getElementById('categoryDescription').value = category.description || '';
+                document.getElementById('categoryModal').classList.add('show');
+            }
+        }
+
+        // 删除分类
+        async function deleteCategory(id) {
+            if (!confirm('确定要删除这个分类吗？该分类下的网站也会被删除！')) return;
+
+            try {
+                const res = await fetch(`/api/manage/categories/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+
+                if (result.success) {
+                    showToast('删除成功');
+                    loadCategories();
+                } else {
+                    showToast(result.error.message, 'error');
+                }
+            } catch (error) {
+                showToast('删除失败', 'error');
+            }
+        }
+
+        // 通过提交
+        async function approveSubmission(id) {
+            try {
+                const res = await fetch(`/api/submissions/${id}/approve`, { method: 'POST' });
+                const result = await res.json();
+
+                if (result.success) {
+                    showToast('已通过');
+                    loadSubmissions(currentSubmissionPage);
+                } else {
+                    showToast(result.error.message, 'error');
+                }
+            } catch (error) {
+                showToast('操作失败', 'error');
+            }
+        }
+
+        // 拒绝提交
+        async function rejectSubmission(id) {
+            if (!confirm('确定要拒绝这个提交吗？')) return;
+
+            try {
+                const res = await fetch(`/api/submissions/${id}/reject`, { method: 'POST' });
+                const result = await res.json();
+
+                if (result.success) {
+                    showToast('已拒绝');
+                    loadSubmissions(currentSubmissionPage);
+                } else {
+                    showToast(result.error.message, 'error');
+                }
+            } catch (error) {
+                showToast('操作失败', 'error');
+            }
+        }
+
+        // 辅助函数
+        function getStatusText(status) {
+            return { 'approved': '已通过', 'pending': '待审核', 'rejected': '已拒绝' }[status] || status;
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('zh-CN');
+        }
+
+        function formatNumber(num) {
+            if (num >= 10000) return (num / 10000).toFixed(1) + '万';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return num || 0;
+        }
+
+        // 页面切换
+        function switchPage(page) {
+            // 更新导航
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
+
+            // 更新页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+
+            // 更新标题
+            const titles = {
+                'dashboard': '数据概览',
+                'websites': '网站管理',
+                'categories': '分类管理',
+                'submissions': '提交审核'
             };
-            
-            try {
-                const url = id ? `/api/manage/websites/${id}` : '/api/manage/websites';
-                const method = id ? 'PUT' : 'POST';
-                
-                const res = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(website)
+            document.getElementById('pageTitle').textContent = titles[page];
+
+            // 加载数据
+            if (page === 'dashboard') loadDashboard();
+            else if (page === 'websites') loadWebsites();
+            else if (page === 'categories') loadCategories();
+            else if (page === 'submissions') loadSubmissions();
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async function () {
+            // 将所有函数绑定到 window 对象
+            window.checkLogin = checkLogin;
+            window.logout = logout;
+            window.showToast = showToast;
+            window.closeModal = closeModal;
+            window.loadCategories = loadCategories;
+            window.getIconEmoji = getIconEmoji;
+            window.loadDashboard = loadDashboard;
+            window.loadWebsites = loadWebsites;
+            window.loadSubmissions = loadSubmissions;
+            window.renderPagination = renderPagination;
+            window.showWebsiteModal = showWebsiteModal;
+            window.editWebsite = editWebsite;
+            window.deleteWebsite = deleteWebsite;
+            window.showCategoryModal = showCategoryModal;
+            window.editCategory = editCategory;
+            window.deleteCategory = deleteCategory;
+            window.approveSubmission = approveSubmission;
+            window.rejectSubmission = rejectSubmission;
+            window.getStatusText = getStatusText;
+            window.formatDate = formatDate;
+            window.formatNumber = formatNumber;
+            window.switchPage = switchPage;
+
+            // 绑定导航点击事件
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    switchPage(this.dataset.page);
                 });
-                
-                const result = await res.json();
-                
-                if (result.success) {
-                    alert(id ? '更新成功' : '添加成功');
-                    closeModal();
-                    loadWebsites(currentPage);
-                } else {
-                    alert(result.error.message);
+            });
+
+            // 绑定表单提交事件
+            document.getElementById('websiteForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const id = document.getElementById('websiteId').value;
+                const data = {
+                    name: document.getElementById('websiteName').value.trim(),
+                    url: document.getElementById('websiteUrl').value.trim(),
+                    category_id: parseInt(document.getElementById('websiteCategory').value),
+                    description: document.getElementById('websiteDescription').value.trim(),
+                    logo_url: document.getElementById('websiteLogo').value.trim(),
+                    status: document.getElementById('websiteStatus').value,
+                    is_hot: document.getElementById('websiteIsHot').checked,
+                    is_recommended: document.getElementById('websiteIsRecommended').checked
+                };
+
+                try {
+                    const url = id ? `/api/manage/websites/${id}` : '/api/manage/websites';
+                    const method = id ? 'PUT' : 'POST';
+
+                    const res = await fetch(url, {
+                        method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await res.json();
+
+                    if (result.success) {
+                        showToast(id ? '更新成功' : '添加成功');
+                        closeModal('websiteModal');
+                        loadWebsites(currentWebsitePage);
+                    } else {
+                        showToast(result.error.message, 'error');
+                    }
+                } catch (error) {
+                    showToast('保存失败', 'error');
                 }
-            } catch (error) {
-                console.error('保存失败:', error);
-                alert('保存失败');
-            }
-        });
-        
-        // 页面加载
-        document.addEventListener('DOMContentLoaded', async function() {
-            if (checkLogin()) {
+            });
+
+            document.getElementById('categoryForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const id = document.getElementById('categoryId').value;
+                const data = {
+                    name: document.getElementById('categoryName').value.trim(),
+                    icon: document.getElementById('categoryIcon').value,
+                    sort_order: parseInt(document.getElementById('categorySortOrder').value) || 0,
+                    description: document.getElementById('categoryDescription').value.trim()
+                };
+
+                try {
+                    const url = id ? `/api/manage/categories/${id}` : '/api/manage/categories';
+                    const method = id ? 'PUT' : 'POST';
+
+                    const res = await fetch(url, {
+                        method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await res.json();
+
+                    if (result.success) {
+                        showToast(id ? '更新成功' : '添加成功');
+                        closeModal('categoryModal');
+                        loadCategories();
+                    } else {
+                        showToast(result.error.message, 'error');
+                    }
+                } catch (error) {
+                    showToast('保存失败', 'error');
+                }
+            });
+
+            // 检查登录并加载数据
+            if (await checkLogin()) {
                 await loadCategories();
-                await loadWebsites(1);
+                await loadDashboard();
             }
         });
+        // 管理后台时钟
+        function updateClock() {
+            const timeEl = document.getElementById('currentTime');
+            if (timeEl) {
+                const now = new Date();
+                timeEl.textContent = now.getHours().toString().padStart(2, '0') + ':' + 
+                                   now.getMinutes().toString().padStart(2, '0') + ':' + 
+                                   now.getSeconds().toString().padStart(2, '0');
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
     </script>
 </body>
 </html>

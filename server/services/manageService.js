@@ -1,4 +1,5 @@
 const websiteDAO = require('../dao/websiteDAO');
+const categoryDAO = require('../dao/categoryDAO');
 const { escapeObject } = require('../middleware/validator');
 
 /**
@@ -179,10 +180,120 @@ async function deleteWebsite(id) {
     }
 }
 
+/**
+ * 创建分类
+ * @param {Object} category - 分类信息
+ * @returns {Object} 创建结果
+ */
+async function createCategory(category) {
+    try {
+        const result = await categoryDAO.createCategory(category);
+
+        return {
+            success: true,
+            data: {
+                id: result.lastInsertRowid
+            },
+            message: '创建成功',
+            timestamp: new Date().toISOString()
+        };
+    } catch (error) {
+        console.error('创建分类失败:', error);
+        return {
+            success: false,
+            error: {
+                code: 'DATABASE_ERROR',
+                message: '创建分类失败'
+            },
+            timestamp: new Date().toISOString()
+        };
+    }
+}
+
+/**
+ * 更新分类
+ * @param {number} id - 分类ID
+ * @param {Object} category - 分类信息
+ * @returns {Object} 更新结果
+ */
+async function updateCategory(id, category) {
+    try {
+        const result = await categoryDAO.updateCategory(id, category);
+
+        if (result.changes === 0) {
+            return {
+                success: false,
+                error: {
+                    code: 'NOT_FOUND',
+                    message: '分类不存在'
+                },
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        return {
+            success: true,
+            message: '更新成功',
+            timestamp: new Date().toISOString()
+        };
+    } catch (error) {
+        console.error('更新分类失败:', error);
+        return {
+            success: false,
+            error: {
+                code: 'DATABASE_ERROR',
+                message: '更新分类失败'
+            },
+            timestamp: new Date().toISOString()
+        };
+    }
+}
+
+/**
+ * 删除分类
+ * @param {number} id - 分类ID
+ * @returns {Object} 删除结果
+ */
+async function deleteCategory(id) {
+    try {
+        const result = await categoryDAO.deleteCategory(id);
+
+        if (result.changes === 0) {
+            return {
+                success: false,
+                error: {
+                    code: 'NOT_FOUND',
+                    message: '分类不存在'
+                },
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        return {
+            success: true,
+            message: '删除成功',
+            timestamp: new Date().toISOString()
+        };
+    } catch (error) {
+        console.error('删除分类失败:', error);
+        return {
+            success: false,
+            error: {
+                code: 'DATABASE_ERROR',
+                message: '删除分类失败'
+            },
+            timestamp: new Date().toISOString()
+        };
+    }
+}
+
 module.exports = {
     getAllWebsites,
     getWebsiteById,
     createWebsite,
     updateWebsite,
-    deleteWebsite
+    deleteWebsite,
+    createCategory,
+    updateCategory,
+    deleteCategory
 };

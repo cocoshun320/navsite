@@ -13,21 +13,27 @@ let db = null;
  */
 async function getDatabase() {
     if (!db) {
-        // 初始化sql.js
-        const SQL = await initSqlJs();
+        console.log('[DB] 初始化数据库连接...');
+        try {
+            // 初始化sql.js
+            const SQL = await initSqlJs();
 
-        // 检查数据库文件是否存在
-        const dbExists = fs.existsSync(DB_PATH);
+            // 检查数据库文件是否存在
+            const dbExists = fs.existsSync(DB_PATH);
 
-        if (dbExists) {
-            // 从文件加载数据库
-            const fileBuffer = fs.readFileSync(DB_PATH);
-            db = new SQL.Database(fileBuffer);
-        } else {
-            // 创建新数据库
-            db = new SQL.Database();
-            // 执行初始化脚本
-            initializeDatabase();
+            if (dbExists) {
+                console.log('[DB] 加载现有数据库文件:', DB_PATH);
+                const fileBuffer = fs.readFileSync(DB_PATH);
+                db = new SQL.Database(fileBuffer);
+            } else {
+                console.log('[DB] 创建新数据库...');
+                db = new SQL.Database();
+                initializeDatabase();
+            }
+            console.log('[DB] 数据库已就绪');
+        } catch (error) {
+            console.error('[DB] 数据库连接失败:', error);
+            throw error;
         }
     }
     return db;
@@ -54,9 +60,16 @@ function initializeDatabase() {
  */
 function saveDatabase() {
     if (db) {
-        const data = db.export();
-        const buffer = Buffer.from(data);
-        fs.writeFileSync(DB_PATH, buffer);
+        try {
+            const start = Date.now();
+            const data = db.export();
+            const buffer = Buffer.from(data);
+            fs.writeFileSync(DB_PATH, buffer);
+            const duration = Date.now() - start;
+            console.log(`[DB] 数据库已保存至磁盘 (${duration}ms)`);
+        } catch (error) {
+            console.error('[DB] 数据库保存失败:', error);
+        }
     }
 }
 
@@ -118,17 +131,22 @@ async function queryOne(sql, params = []) {
  */
 async function run(sql, params = []) {
     const database = await getDatabase();
-    database.run(sql, params);
+    try {
+        database.run(sql, params);
+        
+        // 保存更改
+        saveDatabase();
 
-    // 保存更改
-    saveDatabase();
-
-    // 返回结果（模拟better-sqlite3的返回格式）
-    const info = database.exec("SELECT last_insert_rowid() as lastInsertRowid, changes() as changes");
-    return {
-        lastInsertRowid: info[0]?.values[0][0] || 0,
-        changes: info[0]?.values[0][1] || 0
-    };
+        // 返回结果（模拟better-sqlite3的返回格式）
+        const info = database.exec("SELECT last_insert_rowid() as lastInsertRowid, changes() as changes");
+        return {
+            lastInsertRowid: info[0]?.values[0][0] || 0,
+            changes: info[0]?.values[0][1] || 0
+        };
+    } catch (error) {
+        console.error(`[DB] 执行SQL失败: ${sql}`, error);
+        throw error;
+    }
 }
 
 /**

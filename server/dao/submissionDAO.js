@@ -56,7 +56,7 @@ async function getSubmissions(status, page = 1, limit = 20) {
             ORDER BY s.created_at DESC
             LIMIT ? OFFSET ?
         `;
-        params = [status, status, limit, offset];
+        params = [status, limit, offset];
     } else {
         countSql = 'SELECT COUNT(*) as total FROM submissions';
         sql = `

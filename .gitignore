@@ -35,3 +35,9 @@ build/
 tmp/
 temp/
 *.tmp
+
+# AI / System
+.arts/
+.gemini/
+.codeartsdoer/
+nul

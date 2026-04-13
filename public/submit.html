@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="/css/responsive.css">
     <link rel="stylesheet" href="/css/animations.css">
 </head>
+
 <body>
     <!-- 头部导航 -->
     <header class="header">
@@ -18,86 +20,87 @@
                     <span>🌐</span>
                     <span>导航站</span>
                 </a>
-                <nav>
-                    <ul class="nav-menu">
-                        <li><a href="/">首页</a></li>
-                        <li><a href="/submit.html" class="active">提交网站</a></li>
-                        <li><a href="/about.html">关于我们</a></li>
-                    </ul>
+                <nav class="nav">
+                    <a href="/" class="nav-link">首页</a>
+                    <a href="/submit.html" class="nav-link active">提交网站</a>
+                    <a href="/about.html" class="nav-link">关于我们</a>
+                    <span id="currentTime" class="nav-time">--:--:--</span>
                 </nav>
             </div>
         </div>
     </header>
 
-    <!-- 提交表单 -->
-    <section class="websites-section">
+    <!-- 提交表单区 -->
+    <section class="submit-section fade-in">
         <div class="container">
-            <div class="form-container">
-                <h2 class="section-title">提交新网站</h2>
-                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 32px;">
-                    发现优质网站？欢迎提交给我们，审核通过后将展示在导航站
-                </p>
+            <div class="form-card stagger-item">
+                <div class="form-header">
+                    <h1 class="form-title">提交新网站</h1>
+                    <p class="form-subtitle">发现优质网站？欢迎提交给我们，审核通过后将展示在导航站</p>
+                </div>
 
-                <form id="submitForm">
+                <form id="submitForm" class="stagger-item">
                     <!-- 网站名称 -->
-                    <div class="form-group">
-                        <label class="form-label">
+                    <div class="form-group stagger-item">
+                        <label class="form-label" for="name">
                             网站名称 <span class="required">*</span>
                         </label>
-                        <input type="text" class="form-input" id="name" name="name" required
-                               placeholder="请输入网站名称" maxlength="50">
-                        <p class="form-hint">长度2-50个字符</p>
+                        <input type="text" class="form-input" id="name" name="name" required placeholder="想要提交的网站名称"
+                            maxlength="50">
+                        <p class="form-hint">长度 2-50 个字符</p>
                     </div>
 
                     <!-- 网站URL -->
-                    <div class="form-group">
-                        <label class="form-label">
-                            网站URL <span class="required">*</span>
+                    <div class="form-group stagger-item">
+                        <label class="form-label" for="url">
+                            网站 URL <span class="required">*</span>
                         </label>
                         <input type="url" class="form-input" id="url" name="url" required
-                               placeholder="https://example.com" maxlength="200">
-                        <p class="form-hint">必须以http://或https://开头</p>
+                            placeholder="https://example.com" maxlength="200">
+                        <p class="form-hint">必须以 http:// 或 https:// 开头</p>
                     </div>
 
                     <!-- 网站分类 -->
-                    <div class="form-group">
-                        <label class="form-label">
-                            网站分类 <span class="required">*</span>
+                    <div class="form-group stagger-item">
+                        <label class="form-label" for="category_id">
+                            选择类别 <span class="required">*</span>
                         </label>
                         <select class="form-select" id="category_id" name="category_id" required>
-                            <option value="">请选择分类</option>
+                            <option value="">点击选择分类...</option>
                         </select>
                     </div>
 
                     <!-- 网站描述 -->
-                    <div class="form-group">
-                        <label class="form-label">
+                    <div class="form-group stagger-item">
+                        <label class="form-label" for="description">
                             网站描述 <span class="required">*</span>
                         </label>
                         <textarea class="form-textarea" id="description" name="description" required
-                                  placeholder="请简要描述网站内容和特点" maxlength="500"></textarea>
-                        <p class="form-hint">长度10-500个字符</p>
+                            placeholder="请简要描述该网站的核心功能和特色内容" maxlength="500"></textarea>
+                        <p class="form-hint">长度 10-500 个字符</p>
                     </div>
 
                     <!-- 联系邮箱 -->
-                    <div class="form-group">
-                        <label class="form-label">联系邮箱</label>
+                    <div class="form-group stagger-item">
+                        <label class="form-label" for="contact_email">联系邮箱 (选填)</label>
                         <input type="email" class="form-input" id="contact_email" name="contact_email"
-                               placeholder="your@email.com (选填)" maxlength="100">
-                        <p class="form-hint">用于接收审核结果通知（选填）</p>
+                            placeholder="your@email.com" maxlength="100">
+                        <p class="form-hint">用于接收审核状态通知</p>
                     </div>
 
                     <!-- 提交按钮 -->
-                    <button type="submit" class="submit-btn" id="submitBtn">提交网站</button>
+                    <button type="submit" class="submit-btn stagger-item" id="submitBtn">
+                        立即提交网站
+                    </button>
 
                     <!-- 审核说明 -->
-                    <div style="margin-top: 24px; padding: 16px; background: var(--secondary-color); border-radius: 8px;">
-                        <h4 style="margin-bottom: 8px; font-size: 14px;">审核说明</h4>
-                        <ul style="font-size: 14px; color: var(--text-secondary); line-height: 1.8; padding-left: 20px;">
-                            <li>提交后需要审核，审核时间通常为1-3个工作日</li>
-                            <li>网站内容需健康向上，符合法律法规</li>
-                            <li>网站需能正常访问，无恶意内容</li>
-                            <li>审核结果将通过邮件通知（如填写了邮箱）</li>
+                    <div class="info-card stagger-item">
+                        <h4 class="info-title">提交须知</h4>
+                        <ul class="info-list">
+                            <li>通常在 1-3 个工作日内完成人工审核</li>
+                            <li>网站内容需健康合法，且能正常访问</li>
+                            <li>请勿提交重复的网站资源</li>
+                            <li>审核结果将（优先）通过邮件告知反馈</li>
                         </ul>
                     </div>
                 </form>
@@ -190,7 +193,7 @@
         }
 
         // 表单提交
-        document.getElementById('submitForm').addEventListener('submit', async function(e) {
+        document.getElementById('submitForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
             // 验证表单
@@ -216,31 +219,63 @@
                 const result = await api.submitWebsite(formData);
 
                 if (result.success) {
-                    components.showToast(result.data.message, 'success', 3000);
+                    // 替换表单为成功视图
+                    const card = document.querySelector('.form-card');
+                    card.innerHTML = `
+                        <div class="form-header fade-in">
+                            <div style="font-size: 64px; margin-bottom: 24px;">✅</div>
+                            <h1 class="form-title">提交成功！</h1>
+                            <p class="form-subtitle">您的网站已进入审核队列，请耐心等待。</p>
+                            <div style="margin-top: 32px;">
+                                <a href="/" class="submit-btn" style="display: inline-block; width: auto; padding: 12px 32px;">返回首页</a>
+                                <p style="margin-top: 24px; color: var(--text-light); font-size: 14px;">页面将在 <span id="countdown">5</span> 秒后自动跳转</p>
+                            </div>
+                        </div>
+                    `;
 
-                    // 清空表单
-                    document.getElementById('submitForm').reset();
+                    // 倒计时跳转
+                    let count = 5;
+                    const timer = setInterval(() => {
+                        count--;
+                        document.getElementById('countdown').textContent = count;
+                        if (count <= 0) {
+                            clearInterval(timer);
+                            window.location.href = '/';
+                        }
+                    }, 1000);
 
-                    // 3秒后跳转到首页
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 3000);
                 } else {
                     components.showToast(result.error.message, 'error');
                 }
             } catch (error) {
                 components.showToast('提交失败，请稍后重试', 'error');
             } finally {
-                // 恢复提交按钮
-                submitBtn.disabled = false;
-                submitBtn.textContent = '提交网站';
+                // 恢复提交按钮 (如果还没被移除)
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '立即提交网站';
+                }
             }
         });
 
+        // 更新时钟 (保持一致性)
+        function updateClock() {
+            const timeEl = document.getElementById('currentTime');
+            if (!timeEl) return;
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            timeEl.textContent = `${h}:${m}:${s}`;
+        }
+
         // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadCategories();
+            updateClock();
+            setInterval(updateClock, 1000);
         });
     </script>
 </body>
+
 </html>

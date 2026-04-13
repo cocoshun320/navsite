@@ -13,6 +13,7 @@ const manageRouter = require('./routes/manage');
 
 // 导入数据库
 const db = require('./database');
+const adminService = require('./services/adminService');
 
 // 创建Express应用
 const app = express();
@@ -24,6 +25,7 @@ app.use(helmet({
         directives: {
             defaultSrc: ["'self'"],
             scriptSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrcAttr: ["'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'"],
             imgSrc: ["'self'", "data:", "https:"],
             connectSrc: ["'self'", "https://ipapi.co", "https://ip-api.com", "https://ipwhois.app"]
@@ -39,7 +41,7 @@ const sessions = {};
 app.use((req, res, next) => {
     // 从cookie获取session ID
     const sessionId = req.headers.cookie?.split(';').find(c => c.trim().startsWith('sessionId='))?.split('=')[1];
-    
+
     if (sessionId && sessions[sessionId]) {
         req.session = sessions[sessionId];
     } else {
@@ -48,7 +50,7 @@ app.use((req, res, next) => {
         req.session = sessions[newSessionId];
         res.setHeader('Set-Cookie', `sessionId=${newSessionId}; Path=/; HttpOnly`);
     }
-    
+
     // 保存session的辅助方法
     req.session.save = () => {
         const sid = req.headers.cookie?.split(';').find(c => c.trim().startsWith('sessionId='))?.split('=')[1];
@@ -56,7 +58,7 @@ app.use((req, res, next) => {
             sessions[sid] = req.session;
         }
     };
-    
+
     next();
 });
 
@@ -72,6 +74,64 @@ app.use((req, res, next) => {
     next();
 });
 
+// 管理后台权限控制
+const requireAdminPage = (req, res, next) => {
+    if (adminService.isLoggedIn(req.session)) {
+        next();
+    } else {
+        res.redirect('/login.html');
+    }
+};
+
+const requireAdminApi = (req, res, next) => {
+    if (adminService.isLoggedIn(req.session)) {
+        next();
+    } else {
+        res.status(401).json({
+            success: false,
+            error: {
+                code: 'UNAUTHORIZED',
+                message: '登录状态已失效，请重新登录'
+            },
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+
+// 保护静态 admin.html
+app.get('/admin.html', requireAdminPage);
+
+// 提供前端 IP 信息获取代理 (绕过跨域与HTTPS限制)
+const http = require('http');
+app.get('/api/ipinfo', (req, res) => {
+    let clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+    if (clientIp === '::1' || clientIp === '127.0.0.1' || clientIp.startsWith('::ffff:127.0.0.1')) {
+        clientIp = ''; // 本地测试不传IP以获取出口IP
+    } else if (clientIp.includes(',')) {
+        clientIp = clientIp.split(',')[0].trim();
+    }
+    if (clientIp.startsWith('::ffff:')) {
+        clientIp = clientIp.substring(7);
+    }
+
+    const url = `http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,timezone,isp,org,as,query`;
+
+    http.get(url, (apiRes) => {
+        let data = '';
+        apiRes.on('data', chunk => data += chunk);
+        apiRes.on('end', () => {
+            try {
+                const parsed = JSON.parse(data);
+                res.json({ success: true, data: parsed });
+            } catch (e) {
+                res.status(500).json({ success: false, error: { message: '数据解析失败' } });
+            }
+        });
+    }).on('error', (err) => {
+        res.status(500).json({ success: false, error: { message: err.message } });
+    });
+});
+
 // 静态文件服务
 app.use(express.static(path.join(__dirname, '../public')));
 
@@ -80,7 +140,7 @@ app.use('/api/categories', categoriesRouter);
 app.use('/api/websites', websitesRouter);
 app.use('/api/submissions', submissionsRouter);
 app.use('/api/admin', adminRouter);
-app.use('/api/manage', manageRouter);
+app.use('/api/manage', requireAdminApi, manageRouter);
 
 // 首页路由
 app.get('/', (req, res) => {

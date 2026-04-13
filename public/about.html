@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="/css/responsive.css">
     <link rel="stylesheet" href="/css/animations.css">
 </head>
+
 <body>
     <!-- 头部导航 -->
     <header class="header">
@@ -18,44 +20,48 @@
                     <span>🌐</span>
                     <span>导航站</span>
                 </a>
-                <nav>
-                    <ul class="nav-menu">
-                        <li><a href="/">首页</a></li>
-                        <li><a href="/submit.html">提交网站</a></li>
-                        <li><a href="/about.html" class="active">关于我们</a></li>
-                    </ul>
+                <nav class="nav">
+                    <a href="/" class="nav-link">首页</a>
+                    <a href="/submit.html" class="nav-link">提交网站</a>
+                    <a href="/about.html" class="nav-link active">关于我们</a>
+                    <span id="currentTime" class="nav-time">--:--:--</span>
                 </nav>
             </div>
         </div>
     </header>
 
     <!-- 关于我们内容 -->
-    <section class="websites-section">
+    <section class="submit-section fade-in">
         <div class="container">
-            <div class="form-container">
-                <h2 class="section-title">关于导航站</h2>
+            <div class="form-card">
+                <div class="form-header">
+                    <h1 class="form-title">关于导航站</h1>
+                    <p class="form-subtitle">专注优质资源发现，让互联网触手可及</p>
+                </div>
 
-                <div style="margin-bottom: 32px;">
-                    <h3 style="font-size: 20px; margin-bottom: 16px; color: var(--primary-color);">平台介绍</h3>
+                <div class="form-group stagger-item">
+                    <h3 class="info-title">平台介绍</h3>
                     <p style="line-height: 1.8; color: var(--text-secondary);">
                         导航站是一个专注于优质网站资源收录和导航的平台。我们致力于帮助用户快速发现和访问各类优质网站，
                         提供清晰的分类体系和便捷的搜索功能，让用户能够轻松找到所需的网站资源。
                     </p>
                 </div>
 
-                <div style="margin-bottom: 32px;">
-                    <h3 style="font-size: 20px; margin-bottom: 16px; color: var(--primary-color);">核心功能</h3>
-                    <ul style="line-height: 2; color: var(--text-secondary); padding-left: 20px;">
-                        <li><strong>网站分类展示</strong> - 按类别展示收录的网站资源，方便用户浏览</li>
-                        <li><strong>网站搜索</strong> - 提供关键词搜索功能，快速定位目标网站</li>
-                        <li><strong>网站提交</strong> - 允许用户提交新网站供审核收录</li>
-                        <li><strong>热门推荐</strong> - 展示热门和精选推荐的网站资源</li>
-                    </ul>
+                <div class="form-group stagger-item">
+                    <h3 class="info-title">核心功能</h3>
+                    <div class="info-card">
+                        <ul class="info-list">
+                            <li><strong>网站分类展示</strong> - 按类别展示收录的网站资源，方便用户浏览</li>
+                            <li><strong>网站搜索</strong> - 提供关键词搜索功能，快速定位目标网站</li>
+                            <li><strong>网站提交</strong> - 允许用户提交新网站供审核收录</li>
+                            <li><strong>热门推荐</strong> - 展示热门和精选推荐的网站资源</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div style="margin-bottom: 32px;">
-                    <h3 style="font-size: 20px; margin-bottom: 16px; color: var(--primary-color);">收录标准</h3>
-                    <ul style="line-height: 2; color: var(--text-secondary); padding-left: 20px;">
+                <div class="form-group stagger-item">
+                    <h3 class="info-title">收录标准</h3>
+                    <ul class="info-list">
                         <li>网站内容健康向上，符合国家法律法规</li>
                         <li>网站能够正常访问，无恶意内容或病毒</li>
                         <li>网站具有一定的实用价值或参考价值</li>
@@ -63,19 +69,22 @@
                     </ul>
                 </div>
 
-                <div style="margin-bottom: 32px;">
-                    <h3 style="font-size: 20px; margin-bottom: 16px; color: var(--primary-color);">联系我们</h3>
+                <div class="form-group stagger-item">
+                    <h3 class="info-title">联系我们</h3>
                     <p style="line-height: 1.8; color: var(--text-secondary);">
                         如果您有任何问题或建议，欢迎通过以下方式联系我们：
                     </p>
-                    <ul style="line-height: 2; color: var(--text-secondary); padding-left: 20px; margin-top: 16px;">
-                        <li>邮箱：contact@example.com</li>
-                        <li>网站提交：<a href="/submit.html">提交新网站</a></li>
-                    </ul>
+                    <div class="info-card">
+                        <ul class="info-list">
+                            <li>邮箱：contact@example.com</li>
+                            <li>网站提交：<a href="/submit.html" style="color: var(--primary-color);">立即提交新网站</a></li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div style="padding: 24px; background: var(--secondary-color); border-radius: 8px; text-align: center;">
-                    <p style="font-size: 14px; color: var(--text-secondary);">
+                <div
+                    style="margin-top: 48px; border-top: 1px solid var(--border-color); padding-top: 24px; text-align: center;">
+                    <p style="font-size: 14px; color: var(--text-light);">
                         © 2024 网站导航平台. All rights reserved.
                     </p>
                 </div>
@@ -83,18 +92,24 @@
         </div>
     </section>
 
-    <!-- 底部 -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="/about.html">关于我们</a>
-                    <a href="/submit.html">提交网站</a>
-                    <a href="mailto:contact@example.com">联系我们</a>
-                </div>
-                <p class="footer-copyright">© 2024 网站导航平台. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <!-- JavaScript -->
+    <script>
+        // 更新时钟
+        function updateClock() {
+            const timeEl = document.getElementById('currentTime');
+            if (!timeEl) return;
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            timeEl.textContent = `${h}:${m}:${s}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateClock();
+            setInterval(updateClock, 1000);
+        });
+    </script>
 </body>
+
 </html>
